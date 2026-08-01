@@ -400,6 +400,11 @@ final class ProviderWirelessDispatch {
                     if (blocked.test(connection)) {
                         pauseTarget(connection);
                         evenReady.remove(connection);
+                    } else if (result.refillAfter > gameTick) {
+                        // Covered targets leave the active fairness set until
+                        // their estimated coverage nears its end, so a huge
+                        // request does not revisit every machine each tick.
+                        pass.cooldown(connection, result.refillAfter);
                     }
                     if (result.outcome == WirelessPushOutcome.GLOBAL_ABORT) {
                         return remaining;
@@ -762,7 +767,7 @@ final class ProviderWirelessDispatch {
     }
 
     record BatchAttemptResult(
-            long ownedCopies, WirelessPushOutcome outcome) {
+            long ownedCopies, WirelessPushOutcome outcome, long refillAfter) {
     }
 
     @FunctionalInterface

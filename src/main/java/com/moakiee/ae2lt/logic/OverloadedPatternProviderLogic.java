@@ -129,7 +129,7 @@ public class OverloadedPatternProviderLogic extends PatternProviderLogic
             ProviderTarget target) {}
 
     private record BatchTargetDispatchResult(
-            long ownedCopies, WirelessPushOutcome outcome) {}
+            long ownedCopies, WirelessPushOutcome outcome, long refillAfter) {}
 
     /** Current provider-owned decoded patterns and their stable scheduling handles. */
     private final OverloadedProviderPatternCatalog patternCatalog =
@@ -442,7 +442,7 @@ public class OverloadedPatternProviderLogic extends PatternProviderLogic
         double oneCopyCost = PowerCostUtil.totalCost(oneCopyTemplate);
         return normalDispatch.dispatchBatch(
                 patternHandle,
-                contexts.keySet(),
+                List.copyOf(contexts.keySet()),
                 maxCraft,
                 gameTick,
                 (target, share) -> {
@@ -462,7 +462,8 @@ public class OverloadedPatternProviderLogic extends PatternProviderLogic
                             patternHandle,
                             oneCopyTemplate,
                             share,
-                            oneCopyCost);
+                            oneCopyCost,
+                            false);
                     if (ramp.ownedCopies() <= 0L) {
                         return new ProviderNormalDispatch.BatchAttemptResult(
                                 0L, ramp.globalAbort(), false);
@@ -552,7 +553,9 @@ public class OverloadedPatternProviderLogic extends PatternProviderLogic
                             connection,
                             server);
                     return new ProviderWirelessDispatch.BatchAttemptResult(
-                            result.ownedCopies(), result.outcome());
+                            result.ownedCopies(),
+                            result.outcome(),
+                            result.refillAfter());
                 },
                 connection -> isConnectionAlive(connection, server),
                 connection -> connectionsDirty = true);
@@ -567,20 +570,24 @@ public class OverloadedPatternProviderLogic extends PatternProviderLogic
             WirelessConnection conn,
             net.minecraft.server.MinecraftServer server) {
         if (wirelessOverflow.contains(conn)) {
-            return new BatchTargetDispatchResult(0L, WirelessPushOutcome.SOFT_FAIL);
+            return new BatchTargetDispatchResult(
+                    0L, WirelessPushOutcome.SOFT_FAIL, Long.MIN_VALUE);
         }
 
         var targetLevel = server.getLevel(conn.dimension());
         if (targetLevel == null || !targetLevel.isLoaded(conn.pos())) {
-            return new BatchTargetDispatchResult(0L, WirelessPushOutcome.HARD_FAIL);
+            return new BatchTargetDispatchResult(
+                    0L, WirelessPushOutcome.HARD_FAIL, Long.MIN_VALUE);
         }
 
         if (!conn.canAccept(targetLevel, pattern)) {
-            return new BatchTargetDispatchResult(0L, WirelessPushOutcome.HARD_FAIL);
+            return new BatchTargetDispatchResult(
+                    0L, WirelessPushOutcome.HARD_FAIL, Long.MIN_VALUE);
         }
         var context = new BatchTargetContext(targetLevel, conn);
         if (isBatchTargetBlocked(context, patternHandle)) {
-            return new BatchTargetDispatchResult(0L, WirelessPushOutcome.SOFT_FAIL);
+            return new BatchTargetDispatchResult(
+                    0L, WirelessPushOutcome.SOFT_FAIL, Long.MIN_VALUE);
         }
         autoReturn.beforeDispatch(targetLevel, conn);
         var ramp = dispatchBatchRamp(
@@ -589,21 +596,26 @@ public class OverloadedPatternProviderLogic extends PatternProviderLogic
                 patternHandle,
                 oneCopyTemplate,
                 maxCraft,
-                oneCopyCost);
+                oneCopyCost,
+                true);
         if (ramp.ownedCopies() <= 0L) {
             return new BatchTargetDispatchResult(
                     0L,
                     ramp.globalAbort()
                             ? WirelessPushOutcome.GLOBAL_ABORT
-                            : WirelessPushOutcome.SOFT_FAIL);
+                            : WirelessPushOutcome.SOFT_FAIL,
+                    Long.MIN_VALUE);
         }
 
         alertGridTick();
+        long refillAfter = conn.refillDueAfterSuccess(
+                patternHandle, targetLevel.getGameTime(), ramp.ownedCopies());
         return new BatchTargetDispatchResult(
                 ramp.ownedCopies(),
                 ramp.globalAbort()
                         ? WirelessPushOutcome.GLOBAL_ABORT
-                        : WirelessPushOutcome.SUCCESS);
+                        : WirelessPushOutcome.SUCCESS,
+                refillAfter);
     }
 
     private boolean isBatchTargetBlocked(
@@ -634,13 +646,16 @@ public class OverloadedPatternProviderLogic extends PatternProviderLogic
             IPatternDetails patternHandle,
             KeyCounter[] oneCopyTemplate,
             long maxCraft,
-            double oneCopyCost) {
+            double oneCopyCost,
+            boolean singleChunk) {
         boolean batchSupported = context.target().supportsBatch(
                 context.level(), pattern);
         return context.target().pushPattern(
                 patternHandle,
                 maxCraft,
                 batchSupported,
+                singleChunk,
+                context.level().getGameTime(),
                 () -> isBatchTargetBlocked(context, patternHandle),
                 copies -> pushBatchChunk(
                         context,

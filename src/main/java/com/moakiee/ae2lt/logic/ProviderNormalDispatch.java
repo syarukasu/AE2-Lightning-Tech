@@ -5,7 +5,6 @@ import java.util.EnumMap;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -13,7 +12,15 @@ import net.minecraft.server.level.ServerLevel;
 
 import appeng.api.crafting.IPatternDetails;
 
-/** Runtime scheduling owner for the provider's adjacent physical targets. */
+/**
+ * Runtime scheduling owner for the provider's adjacent physical targets.
+ *
+ * <p>Direct mode splits every batch instantly and evenly across the targets
+ * that can receive right now (at most one copy of difference per round). It
+ * keeps no cross-tick fairness history; only the per target-pattern rejection
+ * penalty survives between calls so a failing target is probed at most once
+ * per tick and with exponential backoff afterwards.</p>
+ */
 final class ProviderNormalDispatch {
     private static final int INITIAL_COOLDOWN = 5;
     private static final int MAX_COOLDOWN = 40;
@@ -24,11 +31,7 @@ final class ProviderNormalDispatch {
             new HashMap<>();
     private final DueTaskQueue<TargetPatternKey<ProviderTarget>> expirations =
             new DueTaskQueue<>();
-    private final DispatchFairnessScheduler<ProviderTarget, IPatternDetails> fairness =
-            DispatchFairnessScheduler.forCanonicalPatterns();
     private int cursor;
-    private long topologyVersion;
-    private Set<ProviderTarget> activeTargets = Set.of();
 
     ProviderTarget target(
             ServerLevel level,
@@ -41,7 +44,6 @@ final class ProviderNormalDispatch {
                     || !current.dimension().equals(level.dimension())
                     || !current.pos().equals(targetPos)
                     || current.boundFace() != targetFace) {
-                topologyVersion++;
                 return new ProviderTarget(
                         level.dimension(), targetPos, targetFace);
             }
@@ -50,10 +52,7 @@ final class ProviderNormalDispatch {
     }
 
     void restore(Direction pushDirection, ProviderTarget target) {
-        var previous = targets.put(pushDirection, target);
-        if (previous != target) {
-            topologyVersion++;
-        }
+        targets.put(pushDirection, target);
     }
 
     List<Direction> dispatchOrder(List<Direction> directions) {
@@ -69,63 +68,62 @@ final class ProviderNormalDispatch {
         return ordered;
     }
 
-    DispatchFairnessScheduler<ProviderTarget, IPatternDetails>.Pass beginPass(
-            IPatternDetails pattern,
-            java.util.Collection<ProviderTarget> currentTargets,
-            long gameTick) {
-        return fairness.beginPass(
-                pattern, currentTargets, topologyVersion, gameTick);
-    }
-
+    /**
+     * Splits {@code maxCopies} evenly across the targets that are receivable
+     * right now. Each round recomputes equal shares over the surviving
+     * targets, so two targets never differ by more than one copy within a
+     * round and copies rejected by full targets flow to the remaining ones.
+     */
     long dispatchBatch(
             IPatternDetails pattern,
-            java.util.Collection<ProviderTarget> currentTargets,
+            List<ProviderTarget> orderedTargets,
             long maxCopies,
             long gameTick,
             BatchAttempt attempt) {
-        var currentActive = Set.copyOf(currentTargets);
-        if (!currentActive.equals(activeTargets)) {
-            activeTargets = currentActive;
-            topologyVersion++;
+        var eligible = new ArrayList<ProviderTarget>(orderedTargets.size());
+        for (var target : orderedTargets) {
+            if (retryAfter(target, pattern, gameTick) <= gameTick) {
+                eligible.add(target);
+            }
         }
+
         long remaining = maxCopies;
-        try (var pass = beginPass(pattern, currentTargets, gameTick)) {
-            int attemptBudget = pass.activeTargetsAtStart();
-            for (int attempts = 0;
-                 attempts < attemptBudget && remaining > 0L;
-                 attempts++) {
-                var target = pass.poll();
-                if (target == null) {
-                    break;
-                }
-
-                long retryAfter = retryAfter(target, pattern, gameTick);
-                if (retryAfter > gameTick) {
-                    pass.cooldown(target, retryAfter);
-                    continue;
-                }
-
-                long share = Math.min(remaining, pass.allowance(target));
+        while (remaining > 0L && !eligible.isEmpty()) {
+            int count = eligible.size();
+            long base = remaining / count;
+            long extra = remaining % count;
+            long acceptedThisRound = 0L;
+            var survivors = new ArrayList<ProviderTarget>(count);
+            for (int i = 0; i < count && remaining > 0L; i++) {
+                var target = eligible.get(i);
+                long share = Math.min(
+                        remaining, base + (i < extra ? 1L : 0L));
                 if (share <= 0L) {
                     continue;
                 }
                 var result = attempt.push(target, share);
-                if (result.ownedCopies <= 0L) {
-                    if (result.globalAbort) {
-                        break;
+                if (result.ownedCopies() <= 0L) {
+                    if (result.globalAbort()) {
+                        return remaining;
                     }
-                    long due = recordRejection(target, pattern, gameTick);
-                    pass.cooldown(target, due);
+                    recordRejection(target, pattern, gameTick);
                     continue;
                 }
 
-                pass.success(target, result.ownedCopies);
                 recordSuccess(target, pattern);
-                remaining -= result.ownedCopies;
-                if (result.stop || result.globalAbort) {
-                    break;
+                remaining -= result.ownedCopies();
+                acceptedThisRound += result.ownedCopies();
+                if (result.globalAbort() || result.stop()) {
+                    return remaining;
+                }
+                if (result.ownedCopies() >= share) {
+                    survivors.add(target);
                 }
             }
+            if (acceptedThisRound <= 0L) {
+                break;
+            }
+            eligible = survivors;
         }
         return remaining;
     }
@@ -176,7 +174,6 @@ final class ProviderNormalDispatch {
     void patternsChanged() {
         penalties.clear();
         expirations.clear();
-        fairness.clear();
         for (var target : targets.values()) {
             target.clearBatchHistory();
         }
@@ -192,9 +189,7 @@ final class ProviderNormalDispatch {
     void clear() {
         clearRuntimeState();
         targets.clear();
-        activeTargets = Set.of();
         cursor = 0;
-        topologyVersion++;
     }
 
     private void purgeExpired(long gameTick) {

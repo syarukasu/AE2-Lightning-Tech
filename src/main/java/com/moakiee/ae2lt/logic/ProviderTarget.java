@@ -34,6 +34,14 @@ import appeng.helpers.patternprovider.PatternProviderTarget;
  */
 public class ProviderTarget extends TargetAddress {
     private static final int STORAGE_TARGET_CACHE_TTL = 20;
+    /** Batch tiers not confirmed by success within this window expire. */
+    private static final int BATCH_HISTORY_EXPIRY =
+            DispatchFairnessScheduler.WINDOW_TICKS;
+    private static final int MAX_BATCH_CHUNK = 1 << 30;
+    /** Refill slightly before the estimated coverage runs out. */
+    private static final double COVERAGE_REFILL_MARGIN = 0.8;
+    private static final long MAX_COVERAGE_TICKS =
+            DispatchFairnessScheduler.WINDOW_TICKS;
 
     private final ProviderTargetRuntime runtime =
             new ProviderTargetRuntime();
@@ -240,12 +248,19 @@ public class ProviderTarget extends TargetAddress {
     }
 
     /**
-     * Executes the provider's bounded batch ramp for this physical target.
-     * Each canonical pattern remembers its last non-tail chunk that was
-     * inserted in full without overflow. A later call starts from that chunk,
-     * repeats it once, and then doubles ({@code H, H, 2H, 4H, ...}). A clean
-     * rejection of the initial chunk halves the candidate until one succeeds;
-     * that first recovery success ends the current call.
+     * Executes this target's remembered batch behaviour for one dispatch
+     * opportunity.
+     *
+     * <p>With {@code singleChunk} (wireless) one call attempts exactly one
+     * batch tier: the remembered chunk {@code H}. A complete acceptance
+     * promotes the remembered tier to {@code 2H} so the next visit verifies
+     * the higher tier; a rejection or partial acceptance demotes to
+     * {@code H/2} and ends the visit without any in-call retry. Tiers not
+     * confirmed by a success within 100 ticks expire back to one copy.</p>
+     *
+     * <p>Without {@code singleChunk} (direct mode, at most six targets) the
+     * call keeps the bounded in-visit ramp {@code H, H, 2H, 4H, ...} so an
+     * instant even split can be delivered in full within one visit.</p>
      *
      * <p>Dispatch decides the target allowance; the target owns this physical
      * acceptance history and how that allowance is attempted.</p>
@@ -254,6 +269,8 @@ public class ProviderTarget extends TargetAddress {
             IPatternDetails pattern,
             long maxCopies,
             boolean batchSupported,
+            boolean singleChunk,
+            long gameTick,
             BooleanSupplier blocked,
             IntFunction<BatchChunk> pushChunk) {
         if (maxCopies <= 0L) {
@@ -264,12 +281,68 @@ public class ProviderTarget extends TargetAddress {
                 return BatchDispatchResult.EMPTY;
             }
             var single = pushChunk.apply(1);
+            if (single.ownedCopies() > 0L) {
+                var state = batchState(pattern, gameTick);
+                updatePacing(state, gameTick, single.ownedCopies());
+                state.lastWorkTick = gameTick;
+            }
             return new BatchDispatchResult(
                     single.ownedCopies(), single.globalAbort());
         }
+        return singleChunk
+                ? pushSingleChunk(pattern, maxCopies, gameTick, blocked, pushChunk)
+                : pushRampedChunks(pattern, maxCopies, gameTick, blocked, pushChunk);
+    }
 
-        int rememberedChunk = runtime.batchChunks.getOrDefault(pattern, 1);
-        int nextChunk = rememberedChunk;
+    private BatchDispatchResult pushSingleChunk(
+            IPatternDetails pattern,
+            long maxCopies,
+            long gameTick,
+            BooleanSupplier blocked,
+            IntFunction<BatchChunk> pushChunk) {
+        if (blocked.getAsBoolean()) {
+            return BatchDispatchResult.EMPTY;
+        }
+        var state = batchState(pattern, gameTick);
+        int chunkCopies = (int) Math.min(
+                Math.min((long) state.chunk, maxCopies),
+                Integer.MAX_VALUE);
+        boolean requestLimited = chunkCopies < state.chunk;
+        var chunk = pushChunk.apply(chunkCopies);
+        if (chunk.globalAbort()) {
+            return new BatchDispatchResult(
+                    Math.max(0L, chunk.ownedCopies()), true);
+        }
+
+        long owned = chunk.ownedCopies();
+        if (owned <= 0L) {
+            state.chunk = Math.max(1, chunkCopies / 2);
+            markBufferFull(state, gameTick);
+            return BatchDispatchResult.EMPTY;
+        }
+
+        updatePacing(state, gameTick, owned);
+        state.lastWorkTick = gameTick;
+        if (owned == chunkCopies && chunk.fullyInserted()) {
+            if (!requestLimited) {
+                state.chunk = (int) Math.min(
+                        (long) chunkCopies * 2L, MAX_BATCH_CHUNK);
+            }
+        } else {
+            state.chunk = Math.max(1, chunkCopies / 2);
+            markBufferFull(state, gameTick);
+        }
+        return new BatchDispatchResult(owned, false);
+    }
+
+    private BatchDispatchResult pushRampedChunks(
+            IPatternDetails pattern,
+            long maxCopies,
+            long gameTick,
+            BooleanSupplier blocked,
+            IntFunction<BatchChunk> pushChunk) {
+        var state = batchState(pattern, gameTick);
+        int nextChunk = state.chunk;
         long ownedCopies = 0L;
         boolean fullChunkAccepted = false;
         boolean backingOff = false;
@@ -285,19 +358,21 @@ public class ProviderTarget extends TargetAddress {
             boolean requestLimited = chunkCopies < nextChunk;
             var chunk = pushChunk.apply(chunkCopies);
             if (chunk.globalAbort()) {
-                return new BatchDispatchResult(ownedCopies, true);
+                return finishRamp(state, gameTick, ownedCopies, true);
             }
             if (chunk.ownedCopies() <= 0L) {
                 if (!fullChunkAccepted) {
                     if (chunkCopies <= 1) {
-                        runtime.batchChunks.put(pattern, 1);
+                        state.chunk = 1;
+                        markBufferFull(state, gameTick);
                         break;
                     }
                     nextChunk = Math.max(1, chunkCopies / 2);
-                    runtime.batchChunks.put(pattern, nextChunk);
+                    state.chunk = nextChunk;
                     backingOff = true;
                     continue;
                 }
+                markBufferFull(state, gameTick);
                 break;
             }
 
@@ -305,15 +380,15 @@ public class ProviderTarget extends TargetAddress {
             if (chunk.ownedCopies() != chunkCopies
                     || !chunk.fullyInserted()) {
                 if (!fullChunkAccepted) {
-                    runtime.batchChunks.put(
-                            pattern, Math.max(1, chunkCopies / 2));
+                    state.chunk = Math.max(1, chunkCopies / 2);
                 }
+                markBufferFull(state, gameTick);
                 break;
             }
 
             fullChunkAccepted = true;
             if (!requestLimited) {
-                runtime.batchChunks.put(pattern, chunkCopies);
+                state.chunk = chunkCopies;
             }
             if (backingOff) {
                 break;
@@ -323,7 +398,80 @@ public class ProviderTarget extends TargetAddress {
             }
             nextChunk = (int) Math.min(ownedCopies, Integer.MAX_VALUE);
         }
-        return new BatchDispatchResult(ownedCopies, false);
+        return finishRamp(state, gameTick, ownedCopies, false);
+    }
+
+    private BatchDispatchResult finishRamp(
+            PatternBatchState state,
+            long gameTick,
+            long ownedCopies,
+            boolean globalAbort) {
+        if (ownedCopies > 0L) {
+            updatePacing(state, gameTick, ownedCopies);
+            state.lastWorkTick = gameTick;
+        }
+        return ownedCopies <= 0L && !globalAbort
+                ? BatchDispatchResult.EMPTY
+                : new BatchDispatchResult(ownedCopies, globalAbort);
+    }
+
+    /**
+     * Estimated tick at which this target will need new copies of
+     * {@code pattern} again after just accepting {@code ownedCopies}.
+     * Returns {@code gameTick} while the consumption pace is still unknown.
+     */
+    public final long refillDueAfterSuccess(
+            IPatternDetails pattern, long gameTick, long ownedCopies) {
+        var state = runtime.batchStates.get(pattern);
+        if (state == null || state.ticksPerCopy <= 0.0 || ownedCopies <= 0L) {
+            return gameTick;
+        }
+        double coverage = ownedCopies * state.ticksPerCopy
+                * COVERAGE_REFILL_MARGIN;
+        long ticks = (long) Math.min(coverage, MAX_COVERAGE_TICKS);
+        return gameTick + Math.max(0L, ticks);
+    }
+
+    private PatternBatchState batchState(
+            IPatternDetails pattern, long gameTick) {
+        var state = runtime.batchStates.computeIfAbsent(
+                pattern, ignored -> new PatternBatchState());
+        if (state.lastWorkTick != Long.MIN_VALUE
+                && gameTick - state.lastWorkTick >= BATCH_HISTORY_EXPIRY) {
+            state.chunk = 1;
+            state.ticksPerCopy = 0.0;
+            state.bufferFull = false;
+            state.lastFullTick = Long.MIN_VALUE;
+            state.lastWorkTick = Long.MIN_VALUE;
+        }
+        return state;
+    }
+
+    private static void markBufferFull(
+            PatternBatchState state, long gameTick) {
+        state.bufferFull = true;
+        state.lastFullTick = gameTick;
+    }
+
+    /**
+     * A success following a known buffer-full moment shows the machine
+     * drained at least {@code owned} copies over that interval; blend the
+     * observation into the pacing estimate.
+     */
+    private static void updatePacing(
+            PatternBatchState state, long gameTick, long owned) {
+        if (!state.bufferFull || state.lastFullTick == Long.MIN_VALUE) {
+            return;
+        }
+        long interval = gameTick - state.lastFullTick;
+        state.bufferFull = false;
+        if (interval <= 0L || owned <= 0L) {
+            return;
+        }
+        double sample = (double) interval / owned;
+        state.ticksPerCopy = state.ticksPerCopy <= 0.0
+                ? sample
+                : 0.5 * state.ticksPerCopy + 0.5 * sample;
     }
 
     public record BatchDispatchResult(
@@ -393,7 +541,7 @@ public class ProviderTarget extends TargetAddress {
     }
 
     final void clearBatchHistory() {
-        runtime.batchChunks.clear();
+        runtime.batchStates.clear();
     }
 
     private void invalidatePhysicalState() {
@@ -405,7 +553,7 @@ public class ProviderTarget extends TargetAddress {
         runtime.blockedGameTick = Long.MIN_VALUE;
         runtime.lastOutputReturnScanTick = Long.MIN_VALUE;
         runtime.lastSuccessfulPattern = null;
-        runtime.batchChunks.clear();
+        runtime.batchStates.clear();
     }
 
     /** Mutable state with the same lifetime as this physical target object. */
@@ -421,7 +569,7 @@ public class ProviderTarget extends TargetAddress {
                 Collections.newSetFromMap(new IdentityHashMap<>());
         private long blockedGameTick = Long.MIN_VALUE;
         private long lastOutputReturnScanTick = Long.MIN_VALUE;
-        private final IdentityHashMap<IPatternDetails, Integer> batchChunks =
+        private final IdentityHashMap<IPatternDetails, PatternBatchState> batchStates =
                 new IdentityHashMap<>();
         @Nullable
         private IPatternDetails lastSuccessfulPattern;
@@ -429,6 +577,15 @@ public class ProviderTarget extends TargetAddress {
         private RoutedPatternOverflow directionalOverflow;
         @Nullable
         private WirelessOverflowQueue.Bucket wirelessOverflow;
+    }
+
+    /** One canonical pattern's remembered batch tier and consumption pacing. */
+    private static final class PatternBatchState {
+        private int chunk = 1;
+        private long lastWorkTick = Long.MIN_VALUE;
+        private long lastFullTick = Long.MIN_VALUE;
+        private boolean bufferFull;
+        private double ticksPerCopy;
     }
 
     private static final class CachedStorageTarget {
