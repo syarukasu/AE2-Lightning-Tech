@@ -6,10 +6,6 @@ public record TianshuMultiblockScanAttempt(
         TianshuMultiblockScanResult result,
         List<TianshuMultiblockScanIssue> issues) {
 
-    public TianshuMultiblockScanAttempt {
-        issues = issues == null ? List.of() : List.copyOf(issues);
-    }
-
     public boolean formed() {
         return this.result != null && this.issues.isEmpty();
     }
