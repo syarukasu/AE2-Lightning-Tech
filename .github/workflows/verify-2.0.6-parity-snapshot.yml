@@ -1,0 +1,32 @@
+name: Verify AE2LT 2.0.6 parity snapshot
+
+on:
+  pull_request:
+    branches:
+      - forge-1.20.1-port
+    paths:
+      - 'docs/parity/2.0.6/**'
+      - 'tools/parity/**'
+      - '.github/workflows/verify-2.0.6-parity-snapshot.yml'
+  push:
+    branches:
+      - forge-1.20.1-port
+    paths:
+      - 'docs/parity/2.0.6/**'
+      - 'tools/parity/**'
+      - '.github/workflows/verify-2.0.6-parity-snapshot.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Verify fixed target inventory
+        run: python tools/parity/verify_2_0_6_snapshot.py
