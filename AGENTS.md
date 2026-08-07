@@ -5,10 +5,11 @@
 ## 最小読込手順
 
 1. 最初に本書と[`docs/CODEBASE_MAP.md`](docs/CODEBASE_MAP.md)だけを読む。
-2. MapのTask routeを1つ選び、そのrouteに書かれた文書、package、直近testだけを開く。
-3. Java/Gradleファイルは対象symbolを検索し、必要なclass、method、task周辺だけを読む。
-4. compile error、test failure、実依存関係が示した場合だけ隣接scopeへ範囲を広げる。
-5. 全assets、全recipes、全BlockEntity、全client code、全optional integrationの再帰読込を開始条件にしない。
+2. 2.0.6移植作業では[`docs/parity/2.0.6/README.md`](docs/parity/2.0.6/README.md)を固定target snapshotとして追加で読む。
+3. MapのTask routeを1つ選び、そのrouteに書かれた文書、package、直近testだけを開く。
+4. Java/Gradleファイルは対象symbolを検索し、必要なclass、method、task周辺だけを読む。
+5. compile error、test failure、実依存関係が示した場合だけ隣接scopeへ範囲を広げる。
+6. 全assets、全recipes、全BlockEntity、全client code、全optional integrationの再帰読込を開始条件にしない。
 
 ## Canonical repository
 
@@ -33,7 +34,8 @@ Source license             LGPL-3.0-only
 Visual assets license      CC BY-NC-SA 3.0
 Stable addon API           com.moakiee.ae2lt.api.* only
 Current baseline           1.1.4-forge-1.20.1-r7
-Next major target          upstream AE2LT 2.0.6
+Exact major target         ae2lt-2.0.6.jar
+Target SHA-256             bea3e8196a3f126e2d8fcedc86bdb44b536efd3bedd28d3f89bdb0848e5a687b
 ```
 
 このportを原作者・AE2 teamの公式releaseと表現しません。upstream attribution、source license、asset license、permanent noticesを削除・曖昧化しません。
@@ -44,13 +46,17 @@ Lightning storage、Wireless Frequency/Security、AE2 Grid connection、Machine 
 
 ## 2.0.6 port規則
 
-2.0.6差分作業では最初に[`docs/UPSTREAM_2_0_6_DIFF.md`](docs/UPSTREAM_2_0_6_DIFF.md)と対象Issueだけを読みます。
+2.0.6差分作業では最初に[`docs/parity/2.0.6/README.md`](docs/parity/2.0.6/README.md)、[`docs/UPSTREAM_2_0_6_DIFF.md`](docs/UPSTREAM_2_0_6_DIFF.md)、対象Issueだけを読みます。
 
+- GitHub上の1.1.4 sourceは開始点であって完成目標ではない。完成基準は固定SHA-256の2.0.6 JAR。
+- 2.0.6-only class/resourceを「主要機能ではない」という理由で除外しない。
+- 同名classでもmethod-level parity確認前に移植済み扱いしない。
 - NeoForge 1.21.1 / AE2 19.x / Java 21 codeを直接コピーして完了扱いしない。
 - Data Component、StreamCodec、payload、registry、Mixin、world dataを1.20.1用の明示adapterへ変換する。
 - 既存r7 ID/NBT/APIを壊すrenameを行わない。
 - 変換不能なstateを黙ってskipせず、World open前に理由付きで停止する。
 - #12の共通compatibility層を各featureで重複実装しない。
+- #23のParity Gateで未分類entryが残る状態を2.0.6完了としない。
 - Build成功をruntime/feature/release verifiedと表現しない。
 
 ## 安全規則

@@ -1,0 +1,39 @@
+{
+  "target": {
+    "artifact": "ae2lt-2.0.6.jar",
+    "sha256": "bea3e8196a3f126e2d8fcedc86bdb44b536efd3bedd28d3f89bdb0848e5a687b",
+    "decompiler": "CFR 0.152",
+    "jar_entries": 3136,
+    "class_files_including_inner": 1507,
+    "top_level_java": 948,
+    "resources": 1373
+  },
+  "baseline": {
+    "repository": "syarukasu/AE2-Lightning-Tech",
+    "branch": "forge-1.20.1-port",
+    "commit": "9f9a84841bc428fb9059ceaaed5b32e85fdfbd4f",
+    "feature_state": "AE2LT 1.1.4 Forge port",
+    "java": 671,
+    "resources": 965
+  },
+  "initial_java_diff": {
+    "same_path": 576,
+    "target_only": 372,
+    "baseline_only": 95
+  },
+  "initial_resource_raw_path_diff": {
+    "same_path": 687,
+    "target_only": 686,
+    "baseline_only": 278
+  },
+  "languages": {
+    "en_us": {"baseline": 823, "target": 1301, "missing_from_baseline": 488},
+    "zh_cn": {"baseline": 823, "target": 1301, "missing_from_baseline": 486},
+    "ja_jp": {"baseline": 823, "target": 0, "policy": "preserve baseline and translate new target keys"}
+  },
+  "thunderbolt": {
+    "required_range": "[1.0.1,2.0.0)",
+    "ae2lt_files_importing_thunderbolt": 54,
+    "referenced_thunderbolt_types": 63
+  }
+}
