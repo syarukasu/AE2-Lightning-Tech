@@ -6,6 +6,15 @@ import com.moakiee.ae2lt.logic.tianshu.TianshuMultiblockScanAttempt;
 import com.moakiee.ae2lt.logic.tianshu.TianshuMultiblockScanResult;
 import com.moakiee.ae2lt.logic.tianshu.TianshuMultiblockScanner;
 import com.moakiee.ae2lt.registry.ModBlockEntities;
+import appeng.api.crafting.IPatternDetails;
+import appeng.api.crafting.PatternDetailsHelper;
+import appeng.api.networking.IGrid;
+import appeng.api.stacks.AEKey;
+import appeng.api.stacks.GenericStack;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
@@ -13,6 +22,10 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.entity.player.Player;
+import appeng.menu.MenuOpener;
+import appeng.menu.locator.MenuLocator;
+import com.moakiee.ae2lt.menu.TianshuSupercomputerControllerMenu;
 
 /**
  * Tianshuの形成ライフサイクルだけを担当します。
@@ -68,6 +81,93 @@ public final class TianshuSupercomputerControllerBlockEntity extends BlockEntity
         return formedStructure;
     }
 
+    public IGrid getGrid() {
+        if (formedStructure == null || level == null) {
+            return null;
+        }
+        if (level.getBlockEntity(formedStructure.portPos())
+                instanceof TianshuSupercomputerPortBlockEntity port) {
+            return port.getMainNode().getGrid();
+        }
+        return null;
+    }
+
+    public long storageCapacity() {
+        return formedStructure == null ? 0L : formedStructure.coreProfile().storageBytes();
+    }
+
+    public int parallelism() {
+        return formedStructure == null ? 1 : Math.max(1, formedStructure.coreProfile().parallelism());
+    }
+
+    public boolean isCraftingBusy() {
+        if (formedStructure == null || level == null) {
+            return false;
+        }
+        return level.getBlockEntity(formedStructure.portPos())
+                instanceof TianshuSupercomputerPortBlockEntity port
+                && port.getCraftingCpu().isBusy();
+    }
+
+    public void openMenu(Player player, MenuLocator locator) {
+        MenuOpener.open(TianshuSupercomputerControllerMenu.TYPE, player, locator);
+    }
+
+    public void patternsChanged() {
+        if (level != null && formedStructure != null
+                && level.getBlockEntity(formedStructure.portPos())
+                instanceof TianshuSupercomputerPortBlockEntity port) {
+            port.refreshCraftingProvider();
+        }
+        setChanged();
+    }
+
+    public List<IPatternDetails> getClosedLoopPatterns() {
+        if (!(level instanceof net.minecraft.server.level.ServerLevel serverLevel)
+                || formedStructure == null) {
+            return List.of();
+        }
+        List<IPatternDetails> result = new ArrayList<>();
+        for (BlockPos storagePos : formedStructure.patternStoragePositions()) {
+            if (!(serverLevel.getBlockEntity(storagePos) instanceof TianshuPatternStorageBlockEntity storage)) {
+                continue;
+            }
+            for (var stack : storage.getTerminalPatternInventory()) {
+                if (!stack.isEmpty() && PatternDetailsHelper.isEncodedPattern(stack)) {
+                    IPatternDetails details = PatternDetailsHelper.decodePattern(stack, serverLevel);
+                    if (details != null) {
+                        result.add(new com.moakiee.ae2lt.logic.tianshu.TianshuClosedLoopPatternDetails(details));
+                    }
+                }
+            }
+        }
+        return List.copyOf(result);
+    }
+
+    public List<TianshuPatternStorageBlockEntity> getPatternStorageEntities() {
+        if (!(level instanceof net.minecraft.server.level.ServerLevel serverLevel)
+                || formedStructure == null) {
+            return List.of();
+        }
+        List<TianshuPatternStorageBlockEntity> result = new ArrayList<>();
+        for (BlockPos storagePos : formedStructure.patternStoragePositions()) {
+            if (serverLevel.getBlockEntity(storagePos) instanceof TianshuPatternStorageBlockEntity storage) {
+                result.add(storage);
+            }
+        }
+        return List.copyOf(result);
+    }
+
+    public Set<AEKey> getEmitableItems() {
+        Set<AEKey> result = new HashSet<>();
+        for (IPatternDetails details : getClosedLoopPatterns()) {
+            for (GenericStack output : details.getOutputs()) {
+                result.add(output.what());
+            }
+        }
+        return Set.copyOf(result);
+    }
+
     private void refreshStructure() {
         if (!(level instanceof net.minecraft.server.level.ServerLevel serverLevel)) {
             return;
@@ -91,7 +191,6 @@ public final class TianshuSupercomputerControllerBlockEntity extends BlockEntity
         }
 
         applyFormedMembers(attempt.result());
-        formedStructure = attempt.result();
         setControllerFormed(true);
         setChanged();
     }
@@ -104,11 +203,50 @@ public final class TianshuSupercomputerControllerBlockEntity extends BlockEntity
         for (BlockPos member : result.members()) {
             setMemberFormed(member, true);
         }
+        // バインド処理から参照できるよう、形成結果を先に確定します。
+        formedStructure = result;
+        bindRuntimeMembers(result);
+    }
+
+    private void bindRuntimeMembers(TianshuMultiblockScanResult result) {
+        if (level == null) {
+            return;
+        }
+        if (level.getBlockEntity(result.portPos())
+                instanceof TianshuSupercomputerPortBlockEntity port) {
+            port.bindController(worldPosition);
+        }
+        for (BlockPos storagePos : result.patternStoragePositions()) {
+            if (level.getBlockEntity(storagePos) instanceof TianshuPatternStorageBlockEntity storage) {
+                storage.setControllerBinding(worldPosition);
+            }
+        }
+        for (BlockPos storagePos : result.seedStoragePositions()) {
+            if (level.getBlockEntity(storagePos) instanceof TianshuSeedStorageBlockEntity storage) {
+                storage.setControllerBinding(worldPosition);
+            }
+        }
     }
 
     private void clearFormedMembers() {
         if (formedStructure == null) {
             return;
+        }
+        if (level != null && level.getBlockEntity(formedStructure.portPos())
+                instanceof TianshuSupercomputerPortBlockEntity port) {
+            port.bindController(null);
+        }
+        for (BlockPos storagePos : formedStructure.patternStoragePositions()) {
+            if (level != null && level.getBlockEntity(storagePos)
+                    instanceof TianshuPatternStorageBlockEntity storage) {
+                storage.setControllerBinding(null);
+            }
+        }
+        for (BlockPos storagePos : formedStructure.seedStoragePositions()) {
+            if (level != null && level.getBlockEntity(storagePos)
+                    instanceof TianshuSeedStorageBlockEntity storage) {
+                storage.setControllerBinding(null);
+            }
         }
         for (BlockPos member : formedStructure.members()) {
             setMemberFormed(member, false);

@@ -851,5 +851,12 @@
   "block.ae2lt.tianshu_amplifier_unit": "Tianshu Amplifier Unit",
   "block.ae2lt.phase_change_cooling_unit": "Phase-Change Cooling Unit",
   "block.ae2lt.closed_loop_pattern_storage": "Closed-Loop Pattern Storage",
-  "block.ae2lt.closed_loop_seed_storage": "Closed-Loop Seed Storage"
+  "block.ae2lt.closed_loop_seed_storage": "Closed-Loop Seed Storage",
+  "ae2lt.tianshu.gui.formed": "Structure: Formed",
+  "ae2lt.tianshu.gui.unformed": "Structure: Not formed",
+  "ae2lt.tianshu.gui.patterns": "Closed-loop patterns: %s",
+  "ae2lt.tianshu.gui.parallelism": "Dispatch parallelism: %s",
+  "ae2lt.tianshu.gui.storage": "Crafting storage: %s bytes",
+  "ae2lt.tianshu.gui.thunderbolt.available": "Thunderbolt: detected",
+  "ae2lt.tianshu.gui.thunderbolt.unavailable": "Thunderbolt: optional bridge not loaded"
 }

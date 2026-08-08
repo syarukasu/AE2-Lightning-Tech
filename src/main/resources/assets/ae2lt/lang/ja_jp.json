@@ -851,5 +851,12 @@
   "block.ae2lt.tianshu_amplifier_unit": "天枢増幅ユニット",
   "block.ae2lt.phase_change_cooling_unit": "相転移冷却ユニット",
   "block.ae2lt.closed_loop_pattern_storage": "閉ループパターンストレージ",
-  "block.ae2lt.closed_loop_seed_storage": "閉ループ種ストレージ"
+  "block.ae2lt.closed_loop_seed_storage": "閉ループ種ストレージ",
+  "ae2lt.tianshu.gui.formed": "構造：形成済み",
+  "ae2lt.tianshu.gui.unformed": "構造：未形成",
+  "ae2lt.tianshu.gui.patterns": "閉ループパターン：%s",
+  "ae2lt.tianshu.gui.parallelism": "投入並列数：%s",
+  "ae2lt.tianshu.gui.storage": "クラフトストレージ：%sバイト",
+  "ae2lt.tianshu.gui.thunderbolt.available": "Thunderbolt：検出済み",
+  "ae2lt.tianshu.gui.thunderbolt.unavailable": "Thunderbolt：任意ブリッジ未導入"
 }
