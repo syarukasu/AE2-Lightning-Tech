@@ -31,8 +31,8 @@ Minecraft             1.20.1
 Forge                 47.4.20
 AE2                   15.4.10 / 15.4.x
 Java                  17
-Current release       1.1.4-forge-1.20.1-r7
-Next target           upstream AE2LT 2.0.6
+Current release       2.0.6-forge-1.20.1-r1
+Feature target        upstream AE2LT 2.0.6, Forge 1.20.1 release r1
 Stable API            com.moakiee.ae2lt.api.*
 Source license        LGPL-3.0-only
 Assets license        CC BY-NC-SA 3.0
