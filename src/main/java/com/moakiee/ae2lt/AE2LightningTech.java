@@ -216,6 +216,7 @@ public class AE2LightningTech {
                         // 工具
                         acceptCreative(output, ModItems.OVERLOAD_PATTERN);
                         acceptCreative(output, ModItems.OVERLOAD_PATTERN_ENCODER);
+                        acceptCreative(output, ModItems.CLOSED_LOOP_PATTERN);
                         acceptCreative(output, ModItems.OVERLOADED_WIRELESS_CONNECT_TOOL);
                         acceptCreative(output, ModItems.OVERLOADED_FILTER_COMPONENT);
                         // 水晶生长
@@ -734,6 +735,8 @@ public class AE2LightningTech {
 
             MachineAdapterRegistry.init();
             PatternDetailsHelper.registerDecoder(OverloadPatternDecoder.INSTANCE);
+            PatternDetailsHelper.registerDecoder(
+                    com.moakiee.ae2lt.logic.tianshu.loop.ClosedLoopPatternDecoder.INSTANCE);
             StorageCells.addCellHandler(InfiniteCellHandler.INSTANCE);
             ModItems.registerStorageCellModels();
             Upgrades.add(AEItems.SPEED_CARD, ModBlocks.LIGHTNING_SIMULATION_CHAMBER.get(),

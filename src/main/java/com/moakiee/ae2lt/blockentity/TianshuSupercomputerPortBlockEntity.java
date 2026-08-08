@@ -181,7 +181,8 @@ public final class TianshuSupercomputerPortBlockEntity extends AENetworkBlockEnt
     @Override
     public boolean pushPattern(IPatternDetails pattern, KeyCounter[] inputHolder) {
         // AE2標準CPUから誤って押し込まれた場合も、閉ループ所有権以外は受理しません。
-        return pattern instanceof com.moakiee.ae2lt.logic.tianshu.TianshuClosedLoopPatternDetails;
+        return pattern instanceof com.moakiee.ae2lt.logic.tianshu.TianshuClosedLoopPatternDetails
+                || pattern instanceof com.moakiee.ae2lt.logic.tianshu.loop.ClosedLoopPatternDetails;
     }
 
     @Override

@@ -19,6 +19,7 @@ import appeng.crafting.execution.CraftingCpuHelper;
 import appeng.crafting.execution.CraftingSubmitResult;
 import appeng.crafting.inv.ListCraftingInventory;
 import com.moakiee.ae2lt.blockentity.TianshuSupercomputerPortBlockEntity;
+import com.moakiee.ae2lt.logic.tianshu.loop.ClosedLoopPatternDetails;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
@@ -101,8 +102,51 @@ public final class TianshuCraftingCpu implements ICraftingCPU, IGridNodeService 
     }
 
     private long executeOneBatch(Job current, IPatternDetails details, long remaining) {
+        if (details instanceof ClosedLoopPatternDetails closedLoop) {
+            return executeClosedLoopBatch(current, closedLoop, remaining);
+        }
         IPatternDetails actual = details instanceof TianshuClosedLoopPatternDetails wrapped
                 ? wrapped.delegate() : details;
+        return executePlainPattern(current, actual, remaining, null);
+    }
+
+    /** Executes one whole closed-loop cycle and rolls it back if a member cannot finish. */
+    private long executeClosedLoopBatch(Job current, ClosedLoopPatternDetails closedLoop, long remaining) {
+        if (!closedLoop.isEnabled() || closedLoop.getInputs().length == 0) {
+            return 0L;
+        }
+        long cycles = Math.min(remaining, Long.MAX_VALUE);
+        for (IPatternDetails.IInput input : closedLoop.getInputs()) {
+            GenericStack[] possible = input.getPossibleInputs();
+            if (possible.length == 0 || possible[0] == null || input.getMultiplier() <= 0) {
+                return 0L;
+            }
+            long perCycle = safeMultiply(possible[0].amount(), input.getMultiplier());
+            if (perCycle <= 0) {
+                return 0L;
+            }
+            cycles = Math.min(cycles, current.inventory.list.get(possible[0].what()) / perCycle);
+        }
+        if (cycles <= 0) {
+            return 0L;
+        }
+
+        Map<AEKey, Long> delta = new LinkedHashMap<>();
+        for (int memberIndex = 0; memberIndex < closedLoop.memberCount(); memberIndex++) {
+            long memberRuns = safeMultiply(cycles, closedLoop.memberCopies(memberIndex));
+            long completed = executePlainPattern(
+                    current, closedLoop.member(memberIndex), memberRuns, delta);
+            if (completed != memberRuns) {
+                rollback(current, delta);
+                return 0L;
+            }
+        }
+        return cycles;
+    }
+
+    /** Executes a normal AE2 pattern while optionally recording its inventory delta. */
+    private long executePlainPattern(Job current, IPatternDetails actual, long remaining,
+            @Nullable Map<AEKey, Long> delta) {
         if (actual.getInputs().length == 0 || actual.getOutputs().length == 0) {
             return 0;
         }
@@ -137,17 +181,50 @@ public final class TianshuCraftingCpu implements ICraftingCPU, IGridNodeService 
             if (extracted != amount) {
                 return 0;
             }
+            if (delta != null) {
+                mergeDelta(delta, input.getKey(), -amount);
+            }
         }
         for (GenericStack output : actual.getOutputs()) {
             long amount = safeMultiply(output.amount(), operations);
             current.inventory.insert(output.what(), amount, Actionable.MODULATE);
+            if (delta != null) {
+                mergeDelta(delta, output.what(), amount);
+            }
         }
         for (var returned : returnedContainers.entrySet()) {
             // バケツ等の返却物を同じバッチへ戻し、AE2標準の容器会計を欠落させません。
             current.inventory.insert(returned.getKey(), safeMultiply(returned.getValue(), operations),
                     Actionable.MODULATE);
+            if (delta != null) {
+                mergeDelta(delta, returned.getKey(), safeMultiply(returned.getValue(), operations));
+            }
         }
         return operations;
+    }
+
+    private static void mergeDelta(Map<AEKey, Long> delta, AEKey key, long amount) {
+        delta.merge(key, amount, TianshuCraftingCpu::safeSignedAdd);
+    }
+
+    private static long safeSignedAdd(long left, long right) {
+        if (right > 0 && left > Long.MAX_VALUE - right) {
+            return Long.MAX_VALUE;
+        }
+        if (right < 0 && left < Long.MIN_VALUE - right) {
+            return Long.MIN_VALUE;
+        }
+        return left + right;
+    }
+
+    private static void rollback(Job current, Map<AEKey, Long> delta) {
+        for (var entry : delta.entrySet()) {
+            if (entry.getValue() < 0) {
+                current.inventory.insert(entry.getKey(), -entry.getValue(), Actionable.MODULATE);
+            } else if (entry.getValue() > 0) {
+                current.inventory.extract(entry.getKey(), entry.getValue(), Actionable.MODULATE);
+            }
+        }
     }
 
     @Nullable
@@ -238,7 +315,8 @@ public final class TianshuCraftingCpu implements ICraftingCPU, IGridNodeService 
 
     public boolean supportsPlan(ICraftingPlan plan) {
         for (IPatternDetails details : plan.patternTimes().keySet()) {
-            if (!(details instanceof TianshuClosedLoopPatternDetails)) {
+            if (!(details instanceof TianshuClosedLoopPatternDetails)
+                    && !(details instanceof ClosedLoopPatternDetails)) {
                 return false;
             }
         }

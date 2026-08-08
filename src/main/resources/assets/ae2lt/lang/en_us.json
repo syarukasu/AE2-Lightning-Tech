@@ -858,5 +858,8 @@
   "ae2lt.tianshu.gui.parallelism": "Dispatch parallelism: %s",
   "ae2lt.tianshu.gui.storage": "Crafting storage: %s bytes",
   "ae2lt.tianshu.gui.thunderbolt.available": "Thunderbolt: detected",
-  "ae2lt.tianshu.gui.thunderbolt.unavailable": "Thunderbolt: optional bridge not loaded"
+  "ae2lt.tianshu.gui.thunderbolt.unavailable": "Thunderbolt: optional bridge not loaded",
+  "item.ae2lt.closed_loop_pattern": "Closed-Loop Pattern",
+  "ae2lt.tianshu.closed_loop.members": "Member patterns",
+  "ae2lt.tianshu.closed_loop.result": "Result"
 }

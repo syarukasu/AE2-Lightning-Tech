@@ -136,7 +136,12 @@ public final class TianshuSupercomputerControllerBlockEntity extends BlockEntity
                 if (!stack.isEmpty() && PatternDetailsHelper.isEncodedPattern(stack)) {
                     IPatternDetails details = PatternDetailsHelper.decodePattern(stack, serverLevel);
                     if (details != null) {
-                        result.add(new com.moakiee.ae2lt.logic.tianshu.TianshuClosedLoopPatternDetails(details));
+                        // 専用閉ループはそのまま渡し、通常パターンだけ互換ラッパーへ包みます。
+                        if (details instanceof com.moakiee.ae2lt.logic.tianshu.loop.ClosedLoopPatternDetails) {
+                            result.add(details);
+                        } else {
+                            result.add(new com.moakiee.ae2lt.logic.tianshu.TianshuClosedLoopPatternDetails(details));
+                        }
                     }
                 }
             }

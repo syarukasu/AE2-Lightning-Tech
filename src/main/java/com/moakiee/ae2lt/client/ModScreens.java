@@ -24,6 +24,7 @@ import com.moakiee.ae2lt.menu.OverloadedPatternProviderMenu;
 import com.moakiee.ae2lt.menu.OverloadedPowerSupplyMenu;
 import com.moakiee.ae2lt.menu.TeslaCoilMenu;
 import com.moakiee.ae2lt.menu.TianshuSupercomputerControllerMenu;
+import com.moakiee.ae2lt.menu.ClosedLoopPatternEncoderMenu;
 import com.moakiee.ae2lt.registry.ModBlocks;
 import net.minecraft.client.gui.screens.MenuScreens;
 
@@ -52,6 +53,8 @@ public class ModScreens {
             MenuScreens.register(CrystalCatalyzerMenu.TYPE, ModScreens::createCrystalCatalyzerScreen);
             MenuScreens.register(TianshuSupercomputerControllerMenu.TYPE,
                     TianshuSupercomputerControllerScreen::new);
+            MenuScreens.register(ClosedLoopPatternEncoderMenu.TYPE,
+                    ClosedLoopPatternEncoderScreen::new);
         });
     }
 

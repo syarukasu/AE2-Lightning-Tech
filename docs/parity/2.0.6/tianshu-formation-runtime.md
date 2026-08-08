@@ -35,6 +35,15 @@ the AE2 integration layer added after formation support.
 - The port is also an AE2 `PatternContainer`. The Pattern Access Terminal sees
   the pattern-storage units as one virtual inventory, while each storage unit
   reuses AE2's pattern inventory and decoding rules.
+- Added the `ae2lt:closed_loop_pattern` encoded-pattern item and its hand-held
+  encoder screen. The screen accepts up to nine ordinary AE2 encoded patterns,
+  derives external inputs and net outputs, and writes a server-authoritative
+  NBT payload.
+- The payload is decoded by AE2's `PatternDetailsHelper` and is visible to the
+  Tianshu provider without changing ordinary AE2 pattern decoding.
+- The Tianshu CPU executes each member pattern in order as one loop cycle,
+  records an inventory delta, and rolls the cycle back when any member cannot
+  complete. This prevents partial closed-loop execution from leaking items.
 - Submitting a Tianshu-compatible plan uses AE2's initial inventory extraction
   and crafting links. The closed-loop executor then processes the deterministic
   pattern plan in bounded batches and returns the final output through AE2.
@@ -47,10 +56,16 @@ the AE2 integration layer added after formation support.
   A NeoForge 1.21.1 Thunderbolt artifact is not a Forge 1.20.1 dependency, so
   bundling it would not port its runtime and could create class-loader or
   loader conflicts.
-- `ThunderboltBridge` performs optional class-presence detection only. It does
-  not claim Thunderbolt time-wheel, pattern-firing, seed, or maintenance parity.
-- BigInteger AE2 accounting, full seed refill/maintenance jobs, auto-build,
-  client preview, and complete 2.0.6 Thunderbolt parity remain separate work.
+- `ThunderboltBridge` remains optional class-presence detection only. It does
+  not bundle a loader-incompatible NeoForge Thunderbolt JAR, and it does not
+  pretend to provide Thunderbolt time-wheel or maintenance services when the
+  compatible Forge API is absent.
+- The Forge port's closed-loop executor is self-contained and does not require
+  Thunderbolt. A real Forge 1.20.1 Thunderbolt API can be connected behind this
+  boundary without changing the AE2 pattern item or CPU contract.
+- NeoForge-only features such as Thunderbolt time-wheel scheduling, seed-cell
+  maintenance, auto-build, and client preview are not represented as fake
+  implementations in this Forge port.
 
 ## Verification
 
