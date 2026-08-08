@@ -8,6 +8,13 @@ import com.moakiee.ae2lt.block.FirmamentConversionCoreBlock;
 import com.moakiee.ae2lt.block.LightningAssemblyChamberBlock;
 import com.moakiee.ae2lt.block.LightningCollectorBlock;
 import com.moakiee.ae2lt.block.LightningSimulationChamberBlock;
+import com.moakiee.ae2lt.block.MatrixCasingBlock;
+import com.moakiee.ae2lt.block.MatrixControllerBlock;
+import com.moakiee.ae2lt.block.MatrixGlassBlock;
+import com.moakiee.ae2lt.block.MatrixMultiblockSimpleBlock;
+import com.moakiee.ae2lt.block.MatrixPatternStorageBlock;
+import com.moakiee.ae2lt.block.MatrixPortBlock;
+import com.moakiee.ae2lt.logic.craft.MatrixMultiblockComponent;
 import com.moakiee.ae2lt.block.OverloadProcessingFactoryBlock;
 import com.moakiee.ae2lt.block.OverloadTntBlock;
 import com.moakiee.ae2lt.block.OverloadCrystalClusterBlock;
@@ -82,6 +89,19 @@ public final class ModBlocks {
             .forceSolidOn()
             .pushReaction(PushReaction.BLOCK)
             .noLootTable();
+
+    private static final BlockBehaviour.Properties MATRIX_PROPERTIES = BlockBehaviour.Properties.of()
+            .mapColor(MapColor.METAL)
+            .strength(6.0F, 6.0F)
+            .sound(SoundType.METAL)
+            .requiresCorrectToolForDrops();
+
+    private static final BlockBehaviour.Properties MATRIX_GLASS_PROPERTIES = BlockBehaviour.Properties.of()
+            .mapColor(MapColor.METAL)
+            .strength(6.0F, 6.0F)
+            .sound(SoundType.GLASS)
+            .noOcclusion()
+            .requiresCorrectToolForDrops();
 
     public static final RegistryObject<Block> OVERLOAD_CRYSTAL_BLOCK =
             registerBlock("overload_crystal_block", () -> new Block(OVERLOAD_CRYSTAL_BLOCK_PROPERTIES));
@@ -184,6 +204,65 @@ public final class ModBlocks {
 
     public static final RegistryObject<OverloadDeviceWorkbenchBlock> OVERLOAD_DEVICE_WORKBENCH =
             registerBlock("overload_device_workbench", OverloadDeviceWorkbenchBlock::new);
+
+    // Matrix blocks are registered as normal Forge blocks; formation is owned
+    // by the controller block entity and does not replace AE2's controller.
+    public static final RegistryObject<MatrixCasingBlock> MATTER_WARPING_MATRIX_CASING =
+            registerBlock("matter_warping_matrix_casing", () -> new MatrixCasingBlock(MATRIX_PROPERTIES));
+
+    public static final RegistryObject<MatrixMultiblockSimpleBlock> MATTER_WARPING_MATRIX_CONSTRAINT_FRAME =
+            registerBlock("matter_warping_matrix_constraint_frame",
+                    () -> new MatrixMultiblockSimpleBlock(MATRIX_PROPERTIES,
+                            MatrixMultiblockComponent.MATRIX_CONSTRAINT_FRAME));
+
+    public static final RegistryObject<MatrixGlassBlock> MATTER_WARPING_MATRIX_GLASS =
+            registerBlock("matter_warping_matrix_glass", () -> new MatrixGlassBlock(MATRIX_GLASS_PROPERTIES));
+
+    public static final RegistryObject<MatrixControllerBlock> MATTER_WARPING_MATRIX_CONTROLLER =
+            registerBlock("matter_warping_matrix_controller", () -> new MatrixControllerBlock(MATRIX_PROPERTIES));
+
+    public static final RegistryObject<MatrixPortBlock> MATTER_WARPING_MATRIX_PORT =
+            registerBlock("matter_warping_matrix_port", () -> new MatrixPortBlock(MATRIX_PROPERTIES));
+
+    public static final RegistryObject<MatrixMultiblockSimpleBlock> MATTER_WARPING_MATRIX_STABLE_MAIN_CORE =
+            registerBlock("matter_warping_matrix_stable_main_core", () -> new MatrixMultiblockSimpleBlock(
+                    MATRIX_PROPERTIES, MatrixMultiblockComponent.STABLE_MAIN_CORE));
+
+    public static final RegistryObject<MatrixMultiblockSimpleBlock> MATTER_WARPING_MATRIX_QUANTUM_MAIN_CORE =
+            registerBlock("matter_warping_matrix_quantum_main_core", () -> new MatrixMultiblockSimpleBlock(
+                    MATRIX_PROPERTIES, MatrixMultiblockComponent.QUANTUM_MAIN_CORE));
+
+    public static final RegistryObject<MatrixMultiblockSimpleBlock> MATTER_WARPING_MATRIX_OVERLOAD_MAIN_CORE =
+            registerBlock("matter_warping_matrix_overload_main_core", () -> new MatrixMultiblockSimpleBlock(
+                    MATRIX_PROPERTIES, MatrixMultiblockComponent.OVERLOAD_MAIN_CORE));
+
+    public static final RegistryObject<MatrixMultiblockSimpleBlock> MATTER_WARPING_MATRIX_MULTIDIMENSIONAL_MAIN_CORE =
+            registerBlock("matter_warping_matrix_multidimensional_main_core", () -> new MatrixMultiblockSimpleBlock(
+                    MATRIX_PROPERTIES, MatrixMultiblockComponent.MULTIDIMENSIONAL_MAIN_CORE));
+
+    public static final RegistryObject<MatrixMultiblockSimpleBlock> MATTER_WARPING_MATRIX_THREAD_UNIT_T1 =
+            registerBlock("matter_warping_matrix_thread_unit_t1", () -> new MatrixMultiblockSimpleBlock(
+                    MATRIX_PROPERTIES, MatrixMultiblockComponent.THREAD_UNIT_T1));
+
+    public static final RegistryObject<MatrixMultiblockSimpleBlock> MATTER_WARPING_MATRIX_THREAD_UNIT_T2 =
+            registerBlock("matter_warping_matrix_thread_unit_t2", () -> new MatrixMultiblockSimpleBlock(
+                    MATRIX_PROPERTIES, MatrixMultiblockComponent.THREAD_UNIT_T2));
+
+    public static final RegistryObject<MatrixMultiblockSimpleBlock> MATTER_WARPING_MATRIX_THERMAL_CONTROL_UNIT_T1 =
+            registerBlock("matter_warping_matrix_thermal_control_unit_t1", () -> new MatrixMultiblockSimpleBlock(
+                    MATRIX_PROPERTIES, MatrixMultiblockComponent.THERMAL_CONTROL_UNIT_T1));
+
+    public static final RegistryObject<MatrixMultiblockSimpleBlock> MATTER_WARPING_MATRIX_THERMAL_CONTROL_UNIT_T2 =
+            registerBlock("matter_warping_matrix_thermal_control_unit_t2", () -> new MatrixMultiblockSimpleBlock(
+                    MATRIX_PROPERTIES, MatrixMultiblockComponent.THERMAL_CONTROL_UNIT_T2));
+
+    public static final RegistryObject<MatrixPatternStorageBlock> MATTER_WARPING_MATRIX_PATTERN_STORAGE_T1 =
+            registerBlock("matter_warping_matrix_pattern_storage_t1", () -> new MatrixPatternStorageBlock(
+                    MATRIX_PROPERTIES, MatrixMultiblockComponent.PATTERN_STORAGE_T1));
+
+    public static final RegistryObject<MatrixPatternStorageBlock> MATTER_WARPING_MATRIX_PATTERN_STORAGE_T2 =
+            registerBlock("matter_warping_matrix_pattern_storage_t2", () -> new MatrixPatternStorageBlock(
+                    MATRIX_PROPERTIES, MatrixMultiblockComponent.PATTERN_STORAGE_T2));
 
     private ModBlocks() {
     }

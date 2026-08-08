@@ -821,5 +821,20 @@
   "ae2lt.device_hub.module.railgun.acceleration": "Overload Acceleration",
   "ae2lt.device_hub.module.railgun.overload_execution": "Overload Execution",
   "ae2lt.overload_device_workbench.screen.slot.energy": "Energy",
-  "ae2lt.overload_device_workbench.screen.energy_summary": "Energy: %s / %s"
+  "ae2lt.overload_device_workbench.screen.energy_summary": "Energy: %s / %s",
+  "block.ae2lt.matter_warping_matrix_casing": "Matter Warping Matrix Casing",
+  "block.ae2lt.matter_warping_matrix_constraint_frame": "Matter Warping Matrix Constraint Frame",
+  "block.ae2lt.matter_warping_matrix_glass": "Matter Warping Matrix Glass",
+  "block.ae2lt.matter_warping_matrix_controller": "Matter Warping Matrix Controller",
+  "block.ae2lt.matter_warping_matrix_port": "Matter Warping Matrix Port",
+  "block.ae2lt.matter_warping_matrix_stable_main_core": "Matter Warping Matrix Stable Main Core",
+  "block.ae2lt.matter_warping_matrix_quantum_main_core": "Matter Warping Matrix Quantum Main Core",
+  "block.ae2lt.matter_warping_matrix_overload_main_core": "Matter Warping Matrix Overload Main Core",
+  "block.ae2lt.matter_warping_matrix_multidimensional_main_core": "Matter Warping Matrix Multidimensional Main Core",
+  "block.ae2lt.matter_warping_matrix_thread_unit_t1": "Matter Warping Matrix Thread Unit T1",
+  "block.ae2lt.matter_warping_matrix_thread_unit_t2": "Matter Warping Matrix Thread Unit T2",
+  "block.ae2lt.matter_warping_matrix_thermal_control_unit_t1": "Matter Warping Matrix Thermal Control Unit T1",
+  "block.ae2lt.matter_warping_matrix_thermal_control_unit_t2": "Matter Warping Matrix Thermal Control Unit T2",
+  "block.ae2lt.matter_warping_matrix_pattern_storage_t1": "Matter Warping Matrix Pattern Storage T1",
+  "block.ae2lt.matter_warping_matrix_pattern_storage_t2": "Matter Warping Matrix Pattern Storage T2"
 }

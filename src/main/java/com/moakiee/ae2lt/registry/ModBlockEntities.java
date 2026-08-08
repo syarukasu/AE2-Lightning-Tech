@@ -10,6 +10,9 @@ import com.moakiee.ae2lt.blockentity.ExtendedOverloadedPatternProviderBlockEntit
 import com.moakiee.ae2lt.blockentity.LightningAssemblyChamberBlockEntity;
 import com.moakiee.ae2lt.blockentity.LightningCollectorBlockEntity;
 import com.moakiee.ae2lt.blockentity.LightningSimulationChamberBlockEntity;
+import com.moakiee.ae2lt.blockentity.MatrixControllerBlockEntity;
+import com.moakiee.ae2lt.blockentity.MatrixPatternStorageBlockEntity;
+import com.moakiee.ae2lt.blockentity.MatrixPortBlockEntity;
 import com.moakiee.ae2lt.blockentity.OverloadProcessingFactoryBlockEntity;
 import com.moakiee.ae2lt.blockentity.OverloadDeviceWorkbenchBlockEntity;
 import com.moakiee.ae2lt.blockentity.OverloadedControllerBlockEntity;
@@ -194,6 +197,31 @@ public final class ModBlockEntities {
                     () -> BlockEntityType.Builder.of(
                             OverloadDeviceWorkbenchBlockEntity::new,
                             ModBlocks.OVERLOAD_DEVICE_WORKBENCH.get())
+                            .build(null));
+
+    public static final RegistryObject<BlockEntityType<MatrixControllerBlockEntity>>
+            MATRIX_CONTROLLER = BLOCK_ENTITY_TYPES.register(
+                    "matter_warping_matrix_controller",
+                    () -> BlockEntityType.Builder.of(
+                            MatrixControllerBlockEntity::new,
+                            ModBlocks.MATTER_WARPING_MATRIX_CONTROLLER.get())
+                            .build(null));
+
+    public static final RegistryObject<BlockEntityType<MatrixPortBlockEntity>>
+            MATRIX_PORT = BLOCK_ENTITY_TYPES.register(
+                    "matter_warping_matrix_port",
+                    () -> BlockEntityType.Builder.of(
+                            MatrixPortBlockEntity::new,
+                            ModBlocks.MATTER_WARPING_MATRIX_PORT.get())
+                            .build(null));
+
+    public static final RegistryObject<BlockEntityType<MatrixPatternStorageBlockEntity>>
+            MATRIX_PATTERN_STORAGE = BLOCK_ENTITY_TYPES.register(
+                    "matter_warping_matrix_pattern_storage",
+                    () -> BlockEntityType.Builder.of(
+                            MatrixPatternStorageBlockEntity::new,
+                            ModBlocks.MATTER_WARPING_MATRIX_PATTERN_STORAGE_T1.get(),
+                            ModBlocks.MATTER_WARPING_MATRIX_PATTERN_STORAGE_T2.get())
                             .build(null));
 
     private ModBlockEntities() {

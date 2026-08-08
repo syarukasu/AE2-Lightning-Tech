@@ -821,5 +821,20 @@
   "ae2lt.device_hub.module.railgun.acceleration": "オーバーロード加速",
   "ae2lt.device_hub.module.railgun.overload_execution": "オーバーロード処刑",
   "ae2lt.overload_device_workbench.screen.slot.energy": "エネルギー",
-  "ae2lt.overload_device_workbench.screen.energy_summary": "エネルギー：%s / %s"
+  "ae2lt.overload_device_workbench.screen.energy_summary": "エネルギー：%s / %s",
+  "block.ae2lt.matter_warping_matrix_casing": "物質歪曲マトリックス筐体",
+  "block.ae2lt.matter_warping_matrix_constraint_frame": "物質歪曲マトリックス拘束フレーム",
+  "block.ae2lt.matter_warping_matrix_glass": "物質歪曲マトリックスガラス",
+  "block.ae2lt.matter_warping_matrix_controller": "物質歪曲マトリックスコントローラ",
+  "block.ae2lt.matter_warping_matrix_port": "物質歪曲マトリックスポート",
+  "block.ae2lt.matter_warping_matrix_stable_main_core": "物質歪曲マトリックス安定主コア",
+  "block.ae2lt.matter_warping_matrix_quantum_main_core": "物質歪曲マトリックス量子主コア",
+  "block.ae2lt.matter_warping_matrix_overload_main_core": "物質歪曲マトリックスオーバーロード主コア",
+  "block.ae2lt.matter_warping_matrix_multidimensional_main_core": "物質歪曲マトリックス多次元主コア",
+  "block.ae2lt.matter_warping_matrix_thread_unit_t1": "物質歪曲マトリックススレッドユニット T1",
+  "block.ae2lt.matter_warping_matrix_thread_unit_t2": "物質歪曲マトリックススレッドユニット T2",
+  "block.ae2lt.matter_warping_matrix_thermal_control_unit_t1": "物質歪曲マトリックス熱制御ユニット T1",
+  "block.ae2lt.matter_warping_matrix_thermal_control_unit_t2": "物質歪曲マトリックス熱制御ユニット T2",
+  "block.ae2lt.matter_warping_matrix_pattern_storage_t1": "物質歪曲マトリックスパターンストレージ T1",
+  "block.ae2lt.matter_warping_matrix_pattern_storage_t2": "物質歪曲マトリックスパターンストレージ T2"
 }

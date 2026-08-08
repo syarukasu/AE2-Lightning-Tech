@@ -117,6 +117,22 @@ public class AE2LightningTech {
                         acceptCreative(output, ModBlocks.LIGHTNING_ASSEMBLY_CHAMBER);
                         acceptCreative(output, ModBlocks.OVERLOAD_PROCESSING_FACTORY);
                         acceptCreative(output, ModBlocks.CRYSTAL_CATALYZER);
+                        // Matter Warping Matrix structure parts
+                        acceptCreative(output, ModBlocks.MATTER_WARPING_MATRIX_CASING);
+                        acceptCreative(output, ModBlocks.MATTER_WARPING_MATRIX_CONSTRAINT_FRAME);
+                        acceptCreative(output, ModBlocks.MATTER_WARPING_MATRIX_GLASS);
+                        acceptCreative(output, ModBlocks.MATTER_WARPING_MATRIX_CONTROLLER);
+                        acceptCreative(output, ModBlocks.MATTER_WARPING_MATRIX_PORT);
+                        acceptCreative(output, ModBlocks.MATTER_WARPING_MATRIX_STABLE_MAIN_CORE);
+                        acceptCreative(output, ModBlocks.MATTER_WARPING_MATRIX_QUANTUM_MAIN_CORE);
+                        acceptCreative(output, ModBlocks.MATTER_WARPING_MATRIX_OVERLOAD_MAIN_CORE);
+                        acceptCreative(output, ModBlocks.MATTER_WARPING_MATRIX_MULTIDIMENSIONAL_MAIN_CORE);
+                        acceptCreative(output, ModBlocks.MATTER_WARPING_MATRIX_THREAD_UNIT_T1);
+                        acceptCreative(output, ModBlocks.MATTER_WARPING_MATRIX_THREAD_UNIT_T2);
+                        acceptCreative(output, ModBlocks.MATTER_WARPING_MATRIX_THERMAL_CONTROL_UNIT_T1);
+                        acceptCreative(output, ModBlocks.MATTER_WARPING_MATRIX_THERMAL_CONTROL_UNIT_T2);
+                        acceptCreative(output, ModBlocks.MATTER_WARPING_MATRIX_PATTERN_STORAGE_T1);
+                        acceptCreative(output, ModBlocks.MATTER_WARPING_MATRIX_PATTERN_STORAGE_T2);
                         // 网络设备
                         acceptCreative(output, ModBlocks.OVERLOADED_CONTROLLER);
                         acceptCreative(output, ModBlocks.OVERLOADED_PATTERN_PROVIDER);
