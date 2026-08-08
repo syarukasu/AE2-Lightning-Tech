@@ -30,7 +30,7 @@ class TianshuDataModelsTest {
 
         assertTrue(new TianshuMultiblockScanAttempt(result, List.of()).formed());
         assertFalse(new TianshuMultiblockScanAttempt(null, List.of()).formed());
-        assertFalse(new TianshuMultiblockScanAttempt(result, List.of(TianshuMultiblockScanIssue.INVALID_SIZE)).formed());
+        assertFalse(new TianshuMultiblockScanAttempt(result, List.of(TianshuMultiblockScanIssue.MISSING_CASING)).formed());
     }
 
     @Test
