@@ -836,5 +836,20 @@
   "block.ae2lt.matter_warping_matrix_thermal_control_unit_t1": "Matter Warping Matrix Thermal Control Unit T1",
   "block.ae2lt.matter_warping_matrix_thermal_control_unit_t2": "Matter Warping Matrix Thermal Control Unit T2",
   "block.ae2lt.matter_warping_matrix_pattern_storage_t1": "Matter Warping Matrix Pattern Storage T1",
-  "block.ae2lt.matter_warping_matrix_pattern_storage_t2": "Matter Warping Matrix Pattern Storage T2"
+  "block.ae2lt.matter_warping_matrix_pattern_storage_t2": "Matter Warping Matrix Pattern Storage T2",
+  "block.ae2lt.tianshu_supercomputer_casing": "Tianshu Supercomputer Casing",
+  "block.ae2lt.tianshu_supercomputer_glass": "Tianshu Supercomputer Glass",
+  "block.ae2lt.tianshu_supercomputer_controller": "Tianshu Supercomputer Controller",
+  "block.ae2lt.tianshu_supercomputer_port": "Tianshu Supercomputer Port",
+  "block.ae2lt.tianshu_baseline_main_core": "Tianshu Baseline Main Core",
+  "block.ae2lt.tianshu_quantum_main_core": "Tianshu Quantum Main Core",
+  "block.ae2lt.tianshu_overload_main_core": "Tianshu Overload Main Core",
+  "block.ae2lt.tianshu_multidimensional_main_core": "Tianshu Multidimensional Main Core",
+  "block.ae2lt.tianshu_blank_unit": "Tianshu Blank Unit",
+  "block.ae2lt.storage_supercomputing_unit": "Tianshu Storage Supercomputing Unit",
+  "block.ae2lt.parallel_supercomputing_unit": "Tianshu Parallel Supercomputing Unit",
+  "block.ae2lt.tianshu_amplifier_unit": "Tianshu Amplifier Unit",
+  "block.ae2lt.phase_change_cooling_unit": "Phase-Change Cooling Unit",
+  "block.ae2lt.closed_loop_pattern_storage": "Closed-Loop Pattern Storage",
+  "block.ae2lt.closed_loop_seed_storage": "Closed-Loop Seed Storage"
 }

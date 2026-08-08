@@ -836,5 +836,20 @@
   "block.ae2lt.matter_warping_matrix_thermal_control_unit_t1": "物質歪曲マトリックス熱制御ユニット T1",
   "block.ae2lt.matter_warping_matrix_thermal_control_unit_t2": "物質歪曲マトリックス熱制御ユニット T2",
   "block.ae2lt.matter_warping_matrix_pattern_storage_t1": "物質歪曲マトリックスパターンストレージ T1",
-  "block.ae2lt.matter_warping_matrix_pattern_storage_t2": "物質歪曲マトリックスパターンストレージ T2"
+  "block.ae2lt.matter_warping_matrix_pattern_storage_t2": "物質歪曲マトリックスパターンストレージ T2",
+  "block.ae2lt.tianshu_supercomputer_casing": "天枢超演算機構造筐体",
+  "block.ae2lt.tianshu_supercomputer_glass": "天枢超演算機構造ガラス",
+  "block.ae2lt.tianshu_supercomputer_controller": "天枢超演算機コントローラ",
+  "block.ae2lt.tianshu_supercomputer_port": "天枢超演算機ポート",
+  "block.ae2lt.tianshu_baseline_main_core": "天枢基準主コア",
+  "block.ae2lt.tianshu_quantum_main_core": "天枢量子主コア",
+  "block.ae2lt.tianshu_overload_main_core": "天枢オーバーロード主コア",
+  "block.ae2lt.tianshu_multidimensional_main_core": "天枢多次元主コア",
+  "block.ae2lt.tianshu_blank_unit": "天枢ブランクユニット",
+  "block.ae2lt.storage_supercomputing_unit": "天枢ストレージ超演算ユニット",
+  "block.ae2lt.parallel_supercomputing_unit": "天枢並列超演算ユニット",
+  "block.ae2lt.tianshu_amplifier_unit": "天枢増幅ユニット",
+  "block.ae2lt.phase_change_cooling_unit": "相転移冷却ユニット",
+  "block.ae2lt.closed_loop_pattern_storage": "閉ループパターンストレージ",
+  "block.ae2lt.closed_loop_seed_storage": "閉ループ種ストレージ"
 }

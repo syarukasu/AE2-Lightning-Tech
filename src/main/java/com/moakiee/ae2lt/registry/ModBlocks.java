@@ -14,6 +14,14 @@ import com.moakiee.ae2lt.block.MatrixGlassBlock;
 import com.moakiee.ae2lt.block.MatrixMultiblockSimpleBlock;
 import com.moakiee.ae2lt.block.MatrixPatternStorageBlock;
 import com.moakiee.ae2lt.block.MatrixPortBlock;
+import com.moakiee.ae2lt.block.TianshuPatternStorageBlock;
+import com.moakiee.ae2lt.block.TianshuSeedStorageBlock;
+import com.moakiee.ae2lt.block.TianshuSupercomputerControllerBlock;
+import com.moakiee.ae2lt.block.TianshuSupercomputerGlassBlock;
+import com.moakiee.ae2lt.block.TianshuSupercomputerPortBlock;
+import com.moakiee.ae2lt.block.TianshuSupercomputerStructureBlock;
+import com.moakiee.ae2lt.block.TianshuSupercomputingUnitBlock;
+import com.moakiee.ae2lt.logic.tianshu.TianshuMultiblockComponent;
 import com.moakiee.ae2lt.logic.craft.MatrixMultiblockComponent;
 import com.moakiee.ae2lt.block.OverloadProcessingFactoryBlock;
 import com.moakiee.ae2lt.block.OverloadTntBlock;
@@ -98,6 +106,19 @@ public final class ModBlocks {
 
     private static final BlockBehaviour.Properties MATRIX_GLASS_PROPERTIES = BlockBehaviour.Properties.of()
             .mapColor(MapColor.METAL)
+            .strength(6.0F, 6.0F)
+            .sound(SoundType.GLASS)
+            .noOcclusion()
+            .requiresCorrectToolForDrops();
+
+    private static final BlockBehaviour.Properties TIANSHU_PROPERTIES = BlockBehaviour.Properties.of()
+            .mapColor(MapColor.METAL)
+            .strength(6.0F, 6.0F)
+            .sound(SoundType.METAL)
+            .requiresCorrectToolForDrops();
+
+    private static final BlockBehaviour.Properties TIANSHU_GLASS_PROPERTIES = BlockBehaviour.Properties.of()
+            .mapColor(MapColor.COLOR_LIGHT_BLUE)
             .strength(6.0F, 6.0F)
             .sound(SoundType.GLASS)
             .noOcclusion()
@@ -263,6 +284,66 @@ public final class ModBlocks {
     public static final RegistryObject<MatrixPatternStorageBlock> MATTER_WARPING_MATRIX_PATTERN_STORAGE_T2 =
             registerBlock("matter_warping_matrix_pattern_storage_t2", () -> new MatrixPatternStorageBlock(
                     MATRIX_PROPERTIES, MatrixMultiblockComponent.PATTERN_STORAGE_T2));
+
+    // Tianshuブロックは2.0.6の7×7×7構造形成を1.20.1へ移植したものです。
+    public static final RegistryObject<TianshuSupercomputerControllerBlock> TIANSHU_CONTROLLER =
+            registerBlock("tianshu_supercomputer_controller",
+                    () -> new TianshuSupercomputerControllerBlock(TIANSHU_PROPERTIES));
+
+    public static final RegistryObject<TianshuSupercomputerPortBlock> TIANSHU_PORT =
+            registerBlock("tianshu_supercomputer_port",
+                    () -> new TianshuSupercomputerPortBlock(TIANSHU_PROPERTIES));
+
+    public static final RegistryObject<TianshuSupercomputerGlassBlock> TIANSHU_GLASS =
+            registerBlock("tianshu_supercomputer_glass",
+                    () -> new TianshuSupercomputerGlassBlock(TIANSHU_GLASS_PROPERTIES));
+
+    public static final RegistryObject<TianshuSupercomputerStructureBlock> TIANSHU_CASING =
+            registerBlock("tianshu_supercomputer_casing",
+                    () -> new TianshuSupercomputerStructureBlock(
+                            TIANSHU_PROPERTIES, TianshuMultiblockComponent.CASING));
+
+    public static final RegistryObject<TianshuSupercomputingUnitBlock> TIANSHU_BASELINE_MAIN_CORE =
+            registerBlock("tianshu_baseline_main_core", () -> new TianshuSupercomputingUnitBlock(
+                    TIANSHU_PROPERTIES, TianshuMultiblockComponent.MAIN_BASELINE));
+
+    public static final RegistryObject<TianshuSupercomputingUnitBlock> TIANSHU_QUANTUM_MAIN_CORE =
+            registerBlock("tianshu_quantum_main_core", () -> new TianshuSupercomputingUnitBlock(
+                    TIANSHU_PROPERTIES, TianshuMultiblockComponent.MAIN_QUANTUM));
+
+    public static final RegistryObject<TianshuSupercomputingUnitBlock> TIANSHU_OVERLOAD_MAIN_CORE =
+            registerBlock("tianshu_overload_main_core", () -> new TianshuSupercomputingUnitBlock(
+                    TIANSHU_PROPERTIES, TianshuMultiblockComponent.MAIN_OVERLOAD));
+
+    public static final RegistryObject<TianshuSupercomputingUnitBlock> TIANSHU_MULTIDIMENSIONAL_MAIN_CORE =
+            registerBlock("tianshu_multidimensional_main_core", () -> new TianshuSupercomputingUnitBlock(
+                    TIANSHU_PROPERTIES, TianshuMultiblockComponent.MAIN_MULTIDIMENSIONAL));
+
+    public static final RegistryObject<TianshuSupercomputingUnitBlock> TIANSHU_BLANK_UNIT =
+            registerBlock("tianshu_blank_unit", () -> new TianshuSupercomputingUnitBlock(
+                    TIANSHU_PROPERTIES, TianshuMultiblockComponent.BLANK_UNIT));
+
+    public static final RegistryObject<TianshuSupercomputingUnitBlock> TIANSHU_STORAGE_UNIT =
+            registerBlock("storage_supercomputing_unit", () -> new TianshuSupercomputingUnitBlock(
+                    TIANSHU_PROPERTIES, TianshuMultiblockComponent.STORAGE_UNIT));
+
+    public static final RegistryObject<TianshuSupercomputingUnitBlock> TIANSHU_PARALLEL_UNIT =
+            registerBlock("parallel_supercomputing_unit", () -> new TianshuSupercomputingUnitBlock(
+                    TIANSHU_PROPERTIES, TianshuMultiblockComponent.PARALLEL_UNIT));
+
+    public static final RegistryObject<TianshuSupercomputingUnitBlock> TIANSHU_AMPLIFIER_UNIT =
+            registerBlock("tianshu_amplifier_unit", () -> new TianshuSupercomputingUnitBlock(
+                    TIANSHU_PROPERTIES, TianshuMultiblockComponent.AMPLIFIER_UNIT));
+
+    public static final RegistryObject<TianshuSupercomputingUnitBlock> TIANSHU_COOLING_UNIT =
+            registerBlock("phase_change_cooling_unit", () -> new TianshuSupercomputingUnitBlock(
+                    TIANSHU_PROPERTIES, TianshuMultiblockComponent.COOLING));
+
+    public static final RegistryObject<TianshuPatternStorageBlock> TIANSHU_PATTERN_STORAGE =
+            registerBlock("closed_loop_pattern_storage", () -> new TianshuPatternStorageBlock(TIANSHU_PROPERTIES));
+
+    public static final RegistryObject<TianshuSeedStorageBlock> TIANSHU_SEED_STORAGE =
+            registerBlock("closed_loop_seed_storage", () -> new TianshuSeedStorageBlock(TIANSHU_PROPERTIES));
 
     private ModBlocks() {
     }

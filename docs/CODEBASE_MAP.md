@@ -78,6 +78,7 @@ Assets license        CC BY-NC-SA 3.0
 | Lightning runtime | `grid`, `event`, lightning関連BlockEntity | energy storage/capture/tier/grid ownership |
 | Machines | machine関連Block/BE/Menu/Recipe | multiblock、processing、inventory/power |
 | Matter Warping Matrix | `block/Matrix*`, `blockentity/Matrix*`, `logic/craft/Matrix*` | 7x11x7 formation scanning、formed state、member binding |
+| Tianshu Supercomputing Array | `block/Tianshu*`, `blockentity/Tianshu*`, `logic/tianshu` | 7x7x7 formation scanning、formed state、pure compute profile |
 | Overloaded AE network | `device`, `grid`, provider/interface/Menu/Network | high-throughput network components |
 | Wireless/Frequency | frequency/security/binding/wirelesslink/packet | membership、routing、recovery、permissions |
 | Equipment | `celestweave`, `item/railgun`, `device/module`, `device/network` | armor、railgun、module、binding |

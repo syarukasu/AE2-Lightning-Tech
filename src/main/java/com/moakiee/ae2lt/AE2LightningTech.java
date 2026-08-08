@@ -133,6 +133,22 @@ public class AE2LightningTech {
                         acceptCreative(output, ModBlocks.MATTER_WARPING_MATRIX_THERMAL_CONTROL_UNIT_T2);
                         acceptCreative(output, ModBlocks.MATTER_WARPING_MATRIX_PATTERN_STORAGE_T1);
                         acceptCreative(output, ModBlocks.MATTER_WARPING_MATRIX_PATTERN_STORAGE_T2);
+                        // Tianshu Supercomputing Array structure parts
+                        acceptCreative(output, ModBlocks.TIANSHU_CASING);
+                        acceptCreative(output, ModBlocks.TIANSHU_GLASS);
+                        acceptCreative(output, ModBlocks.TIANSHU_CONTROLLER);
+                        acceptCreative(output, ModBlocks.TIANSHU_PORT);
+                        acceptCreative(output, ModBlocks.TIANSHU_BASELINE_MAIN_CORE);
+                        acceptCreative(output, ModBlocks.TIANSHU_QUANTUM_MAIN_CORE);
+                        acceptCreative(output, ModBlocks.TIANSHU_OVERLOAD_MAIN_CORE);
+                        acceptCreative(output, ModBlocks.TIANSHU_MULTIDIMENSIONAL_MAIN_CORE);
+                        acceptCreative(output, ModBlocks.TIANSHU_BLANK_UNIT);
+                        acceptCreative(output, ModBlocks.TIANSHU_STORAGE_UNIT);
+                        acceptCreative(output, ModBlocks.TIANSHU_PARALLEL_UNIT);
+                        acceptCreative(output, ModBlocks.TIANSHU_AMPLIFIER_UNIT);
+                        acceptCreative(output, ModBlocks.TIANSHU_COOLING_UNIT);
+                        acceptCreative(output, ModBlocks.TIANSHU_PATTERN_STORAGE);
+                        acceptCreative(output, ModBlocks.TIANSHU_SEED_STORAGE);
                         // 网络设备
                         acceptCreative(output, ModBlocks.OVERLOADED_CONTROLLER);
                         acceptCreative(output, ModBlocks.OVERLOADED_PATTERN_PROVIDER);

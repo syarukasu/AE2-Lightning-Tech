@@ -13,6 +13,7 @@ import com.moakiee.ae2lt.blockentity.LightningSimulationChamberBlockEntity;
 import com.moakiee.ae2lt.blockentity.MatrixControllerBlockEntity;
 import com.moakiee.ae2lt.blockentity.MatrixPatternStorageBlockEntity;
 import com.moakiee.ae2lt.blockentity.MatrixPortBlockEntity;
+import com.moakiee.ae2lt.blockentity.TianshuSupercomputerControllerBlockEntity;
 import com.moakiee.ae2lt.blockentity.OverloadProcessingFactoryBlockEntity;
 import com.moakiee.ae2lt.blockentity.OverloadDeviceWorkbenchBlockEntity;
 import com.moakiee.ae2lt.blockentity.OverloadedControllerBlockEntity;
@@ -222,6 +223,14 @@ public final class ModBlockEntities {
                             MatrixPatternStorageBlockEntity::new,
                             ModBlocks.MATTER_WARPING_MATRIX_PATTERN_STORAGE_T1.get(),
                             ModBlocks.MATTER_WARPING_MATRIX_PATTERN_STORAGE_T2.get())
+                            .build(null));
+
+    public static final RegistryObject<BlockEntityType<TianshuSupercomputerControllerBlockEntity>>
+            TIANSHU_CONTROLLER = BLOCK_ENTITY_TYPES.register(
+                    "tianshu_supercomputer_controller",
+                    () -> BlockEntityType.Builder.of(
+                            TianshuSupercomputerControllerBlockEntity::new,
+                            ModBlocks.TIANSHU_CONTROLLER.get())
                             .build(null));
 
     private ModBlockEntities() {
