@@ -20,6 +20,11 @@ import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.block.state.properties.BooleanProperty;
 import net.minecraft.world.level.block.state.properties.DirectionProperty;
 import net.minecraft.world.item.context.BlockPlaceContext;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.phys.BlockHitResult;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.InteractionHand;
+import appeng.menu.locator.MenuLocators;
 import org.jetbrains.annotations.Nullable;
 
 public final class TianshuSupercomputerControllerBlock extends TianshuSupercomputerStructureBlock
@@ -93,5 +98,15 @@ public final class TianshuSupercomputerControllerBlock extends TianshuSupercompu
             controller.invalidateStructure();
         }
         super.onRemove(state, level, pos, newState, movedByPiston);
+    }
+
+    @Override
+    public InteractionResult use(BlockState state, Level level, BlockPos pos,
+            Player player, InteractionHand hand, BlockHitResult hitResult) {
+        if (!level.isClientSide()
+                && level.getBlockEntity(pos) instanceof TianshuSupercomputerControllerBlockEntity controller) {
+            controller.openMenu(player, MenuLocators.forBlockEntity(controller));
+        }
+        return InteractionResult.sidedSuccess(level.isClientSide());
     }
 }

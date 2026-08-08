@@ -18,10 +18,10 @@ Port loader              Forge 47.4.20
 Port AE2                 15.4.10 / 15.4.x
 Port Java                17 / class major 61
 Baseline commit          9f9a84841bc428fb9059ceaaed5b32e85fdfbd4f
-Baseline feature state   AE2LT 1.1.4 Forge port
+Baseline feature state   AE2LT 2.0.6 Forge 1.20.1 port
 ```
 
-The 2.0.6 JAR is the target. The GitHub 1.1.4 source is only the starting implementation and the migration baseline.
+The upstream 2.0.6 JAR is the feature target. The Forge 1.20.1 implementation is published as `2.0.6-forge-1.20.1-r1`.
 
 ## Decompile inventory
 

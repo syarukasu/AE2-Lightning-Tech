@@ -216,6 +216,7 @@ public class AE2LightningTech {
                         // 工具
                         acceptCreative(output, ModItems.OVERLOAD_PATTERN);
                         acceptCreative(output, ModItems.OVERLOAD_PATTERN_ENCODER);
+                        acceptCreative(output, ModItems.CLOSED_LOOP_PATTERN);
                         acceptCreative(output, ModItems.OVERLOADED_WIRELESS_CONNECT_TOOL);
                         acceptCreative(output, ModItems.OVERLOADED_FILTER_COMPONENT);
                         // 水晶生长
@@ -695,6 +696,13 @@ public class AE2LightningTech {
             appeng.blockentity.AEBaseBlockEntity.registerBlockEntityItem(
                     crystalCatalyzerBeType,
                     crystalCatalyzerBlock.asItem());
+            // TianshuのAE2ノード／端末インベントリを、設置後のBE処理へ正しく戻します。
+            appeng.blockentity.AEBaseBlockEntity.registerBlockEntityItem(
+                    ModBlockEntities.TIANSHU_PORT.get(),
+                    ModBlocks.TIANSHU_PORT.get().asItem());
+            appeng.blockentity.AEBaseBlockEntity.registerBlockEntityItem(
+                    ModBlockEntities.TIANSHU_PATTERN_STORAGE.get(),
+                    ModBlocks.TIANSHU_PATTERN_STORAGE.get().asItem());
 
             setupWirelessControllerBlock(
                     ModBlocks.WIRELESS_OVERLOADED_CONTROLLER.get(),
@@ -727,6 +735,8 @@ public class AE2LightningTech {
 
             MachineAdapterRegistry.init();
             PatternDetailsHelper.registerDecoder(OverloadPatternDecoder.INSTANCE);
+            PatternDetailsHelper.registerDecoder(
+                    com.moakiee.ae2lt.logic.tianshu.loop.ClosedLoopPatternDecoder.INSTANCE);
             StorageCells.addCellHandler(InfiniteCellHandler.INSTANCE);
             ModItems.registerStorageCellModels();
             Upgrades.add(AEItems.SPEED_CARD, ModBlocks.LIGHTNING_SIMULATION_CHAMBER.get(),

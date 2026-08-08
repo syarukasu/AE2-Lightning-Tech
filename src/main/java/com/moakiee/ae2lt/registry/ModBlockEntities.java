@@ -14,6 +14,9 @@ import com.moakiee.ae2lt.blockentity.MatrixControllerBlockEntity;
 import com.moakiee.ae2lt.blockentity.MatrixPatternStorageBlockEntity;
 import com.moakiee.ae2lt.blockentity.MatrixPortBlockEntity;
 import com.moakiee.ae2lt.blockentity.TianshuSupercomputerControllerBlockEntity;
+import com.moakiee.ae2lt.blockentity.TianshuSupercomputerPortBlockEntity;
+import com.moakiee.ae2lt.blockentity.TianshuPatternStorageBlockEntity;
+import com.moakiee.ae2lt.blockentity.TianshuSeedStorageBlockEntity;
 import com.moakiee.ae2lt.blockentity.OverloadProcessingFactoryBlockEntity;
 import com.moakiee.ae2lt.blockentity.OverloadDeviceWorkbenchBlockEntity;
 import com.moakiee.ae2lt.blockentity.OverloadedControllerBlockEntity;
@@ -231,6 +234,30 @@ public final class ModBlockEntities {
                     () -> BlockEntityType.Builder.of(
                             TianshuSupercomputerControllerBlockEntity::new,
                             ModBlocks.TIANSHU_CONTROLLER.get())
+                            .build(null));
+
+    public static final RegistryObject<BlockEntityType<TianshuSupercomputerPortBlockEntity>>
+            TIANSHU_PORT = BLOCK_ENTITY_TYPES.register(
+                    "tianshu_supercomputer_port",
+                    () -> BlockEntityType.Builder.of(
+                            TianshuSupercomputerPortBlockEntity::new,
+                            ModBlocks.TIANSHU_PORT.get())
+                            .build(null));
+
+    public static final RegistryObject<BlockEntityType<TianshuPatternStorageBlockEntity>>
+            TIANSHU_PATTERN_STORAGE = BLOCK_ENTITY_TYPES.register(
+                    "closed_loop_pattern_storage",
+                    () -> BlockEntityType.Builder.of(
+                            TianshuPatternStorageBlockEntity::new,
+                            ModBlocks.TIANSHU_PATTERN_STORAGE.get())
+                            .build(null));
+
+    public static final RegistryObject<BlockEntityType<TianshuSeedStorageBlockEntity>>
+            TIANSHU_SEED_STORAGE = BLOCK_ENTITY_TYPES.register(
+                    "closed_loop_seed_storage",
+                    () -> BlockEntityType.Builder.of(
+                            TianshuSeedStorageBlockEntity::new,
+                            ModBlocks.TIANSHU_SEED_STORAGE.get())
                             .build(null));
 
     private ModBlockEntities() {

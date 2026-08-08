@@ -1,7 +1,7 @@
-# Tianshu formation runtime status
+# Tianshu Forge 1.20.1 runtime status
 
-This document records the Forge 1.20.1 formation portion of the AE2LT 2.0.6
-Tianshu Supercomputing Array port.
+This document records the Forge 1.20.1 Tianshu Supercomputing Array port and
+the AE2 integration layer added after formation support.
 
 ## Implemented
 
@@ -23,21 +23,52 @@ Tianshu Supercomputing Array port.
   The upstream custom connected-texture loader is intentionally not referenced
   because it is not part of this Forge 1.20.1 baseline.
 
-## Explicit boundary
+## AE2 integration implemented in this port
 
-This step does not claim the complete Tianshu feature. The following are still
-separate work:
+- The formed Tianshu port is an AE2 network node with the standard channel and
+  crafting-provider/requester contracts.
+- AE2's `CraftingService` receives the formed Tianshu CPU through a narrow
+  service mixin. Existing AE2 CPUs and providers remain on their normal path.
+- Tianshu accepts only its own deterministic closed-loop pattern wrapper. A
+  normal AE2, GT, or Mekanism pattern is never silently redirected into this
+  executor.
+- The port is also an AE2 `PatternContainer`. The Pattern Access Terminal sees
+  the pattern-storage units as one virtual inventory, while each storage unit
+  reuses AE2's pattern inventory and decoding rules.
+- Added the `ae2lt:closed_loop_pattern` encoded-pattern item and its hand-held
+  encoder screen. The screen accepts up to nine ordinary AE2 encoded patterns,
+  derives external inputs and net outputs, and writes a server-authoritative
+  NBT payload.
+- The payload is decoded by AE2's `PatternDetailsHelper` and is visible to the
+  Tianshu provider without changing ordinary AE2 pattern decoding.
+- The Tianshu CPU executes each member pattern in order as one loop cycle,
+  records an inventory delta, and rolls the cycle back when any member cannot
+  complete. This prevents partial closed-loop execution from leaking items.
+- Submitting a Tianshu-compatible plan uses AE2's initial inventory extraction
+  and crafting links. The closed-loop executor then processes the deterministic
+  pattern plan in bounded batches and returns the final output through AE2.
+- The controller GUI reports formation state, pattern count, configured
+  parallelism, storage capacity, busy state, and optional Thunderbolt status.
 
-- AE2 grid-node and crafting CPU registration.
-- Pattern and seed inventories, menus, and terminal screens.
-- Closed-loop pattern upload, execution, seed refill, and maintenance jobs.
-- Tianshu controller GUI, networking, auto-build, and client preview.
-- Thunderbolt integration and 2.0.6 NeoForge-only payload/data-component code.
+## Deliberate boundary
 
-The blocks are therefore usable for formation review and structure testing, but
-the formed controller is not advertised as a functioning AE2 crafting CPU.
+- This is not a jar-in-jar copy of the NeoForge 2.0.6 Thunderbolt dependency.
+  A NeoForge 1.21.1 Thunderbolt artifact is not a Forge 1.20.1 dependency, so
+  bundling it would not port its runtime and could create class-loader or
+  loader conflicts.
+- `ThunderboltBridge` remains optional class-presence detection only. It does
+  not bundle a loader-incompatible NeoForge Thunderbolt JAR, and it does not
+  pretend to provide Thunderbolt time-wheel or maintenance services when the
+  compatible Forge API is absent.
+- The Forge port's closed-loop executor is self-contained and does not require
+  Thunderbolt. A real Forge 1.20.1 Thunderbolt API can be connected behind this
+  boundary without changing the AE2 pattern item or CPU contract.
+- NeoForge-only features such as Thunderbolt time-wheel scheduling, seed-cell
+  maintenance, auto-build, and client preview are not represented as fake
+  implementations in this Forge port.
 
 ## Verification
 
-`.\gradlew.bat clean build --no-daemon` passes on Java 17 with Forge 47.4.20
-and AE2 15.4.10. Minecraft client/server startup was not run in this change.
+`./gradlew.bat compileJava --no-daemon` passes on Java 17 with Forge 47.4.20
+and AE2 15.4.10 after the AE2 runtime integration changes. Minecraft
+client/server startup was not run in this change.

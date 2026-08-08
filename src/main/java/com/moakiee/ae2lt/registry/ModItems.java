@@ -34,6 +34,7 @@ import com.moakiee.ae2lt.item.OverloadPatternEncoderItem;
 import com.moakiee.ae2lt.item.OverloadPatternItem;
 import com.moakiee.ae2lt.item.OverloadedFilterComponentItem;
 import com.moakiee.ae2lt.item.OverloadedWirelessConnectorItem;
+import com.moakiee.ae2lt.item.ClosedLoopPatternItem;
 import com.moakiee.ae2lt.item.PerfectElectroChimeCrystalItem;
 import com.moakiee.ae2lt.item.ResearchNoteItem;
 import com.moakiee.ae2lt.item.WeatherCondensateItem;
@@ -209,6 +210,12 @@ public final class ModItems {
     public static final RegistryObject<OverloadPatternItem> OVERLOAD_PATTERN = registerItem(
             "overload_pattern",
             OverloadPatternItem::new,
+            new Item.Properties());
+
+    /** Tianshuの端末で作成する、通常パターンの閉ループ束です。 */
+    public static final RegistryObject<ClosedLoopPatternItem> CLOSED_LOOP_PATTERN = registerItem(
+            "closed_loop_pattern",
+            ClosedLoopPatternItem::new,
             new Item.Properties());
 
     public static final RegistryObject<OverloadPatternEncoderItem> OVERLOAD_PATTERN_ENCODER = registerItem(

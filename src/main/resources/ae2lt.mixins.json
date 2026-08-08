@@ -22,6 +22,7 @@
     "ECOCraftingCpuAccessor",
     "ECOCraftingCpuLogicMixin",
     "CraftingCpuLogicMixin",
+    "TianshuCraftingServiceMixin",
     "GridNodeMaxChannelsMixin",
     "GridConnectionMaxChannelsMixin",
     "GridGetMachineNodesMixin",

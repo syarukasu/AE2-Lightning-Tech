@@ -15,7 +15,7 @@ Source class major       65
 Target branch            forge-1.20.1-port
 Target environment       Minecraft 1.20.1 / Forge 47.4.20 / Java 17
 Target AE2               15.4.10 / 15.4.x
-Current Forge baseline   1.1.4-forge-1.20.1-r7
+Current Forge release    2.0.6-forge-1.20.1-r1
 ```
 
 The older 2.0.3 planning document is superseded for scope selection. It remains
