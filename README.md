@@ -31,22 +31,21 @@ a duplicate and must not receive new development, issues, or releases. See
 
 ## Current and next release lines
 
-The current published Forge baseline is:
+The current Forge release is:
 
 ```text
-AE2LT       2.0.6-forge-1.20.1-r1
+AE2LT       2.0.7-forge-1.20.1-r1
 Minecraft   1.20.1
 Forge       47.4.20
 AE2         15.4.10 through 15.4.x
 Java        17
 ```
 
-The next major port target is upstream **AE2LT 2.0.6**. The supplied NeoForge
-1.21.1 artifact cannot be loaded directly on Forge 1.20.1; its Loader, Minecraft,
-AE2, networking, Data Component, Mixin, world-data, and Java 21 differences must
-be ported feature by feature. Progress is tracked in
-[Epic #21](https://github.com/syarukasu/AE2-Lightning-Tech/issues/21) and
-[`docs/UPSTREAM_2_0_6_DIFF.md`](docs/UPSTREAM_2_0_6_DIFF.md).
+The upstream **AE2LT 2.0.7** artifact is a NeoForge 1.21.1 JAR and cannot be
+loaded directly on Forge 1.20.1. This release ports the verified 2.0.7 delta
+without mixing NeoForge-only classes or resources into the Forge artifact.
+The evidence and port boundary are recorded in
+[`docs/UPSTREAM_2_0_7_DIFF.md`](docs/UPSTREAM_2_0_7_DIFF.md).
 
 ## About
 
@@ -145,7 +144,7 @@ The build separates the slim development JAR from the reobfuscated Jar-in-Jar
 distribution. Publish only the unclassified distribution artifact:
 
 ```text
-build/libs/ae2lt-2.0.6-forge-1.20.1-r1.jar
+build/libs/ae2lt-2.0.7-forge-1.20.1-r1.jar
 ```
 
 Do not distribute the `-slim.jar` artifact.
