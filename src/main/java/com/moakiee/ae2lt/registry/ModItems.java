@@ -115,6 +115,17 @@ public final class ModItems {
     public static final RegistryObject<Item> ULTIMATE_OVERLOAD_CORE =
             registerSimpleItem("ultimate_overload_core", new Item.Properties());
 
+    // 2.0系の高位マルチブロック素材。各段階を個別のアイテムとして登録し、
+    // Overload ProcessingのレシピとLightning Assemblyの入力を同じIDで接続する。
+    public static final RegistryObject<Item> BASIC_TOPOLOGICAL_LATTICE =
+            registerSimpleItem("basic_topological_lattice", new Item.Properties());
+    public static final RegistryObject<Item> DENSE_TOPOLOGICAL_LATTICE =
+            registerSimpleItem("dense_topological_lattice", new Item.Properties());
+    public static final RegistryObject<Item> ENTANGLED_TOPOLOGICAL_LATTICE =
+            registerSimpleItem("entangled_topological_lattice", new Item.Properties());
+    public static final RegistryObject<Item> HYPERDIMENSIONAL_TOPOLOGICAL_LATTICE =
+            registerSimpleItem("hyperdimensional_topological_lattice", new Item.Properties());
+
     public static final RegistryObject<LightningCollapseMatrixItem> LIGHTNING_COLLAPSE_MATRIX =
             registerItem("lightning_collapse_matrix", LightningCollapseMatrixItem::new, new Item.Properties());
 
