@@ -34,10 +34,10 @@ a duplicate and must not receive new development, issues, or releases. See
 The current Forge release is:
 
 ```text
-AE2LT       2.0.7-forge-1.20.1-r1
+AE2LT       2.0.7-forge-1.20.1-r3
 Minecraft   1.20.1
-Forge       47.4.20
-AE2         15.4.10 through 15.4.x
+Forge       47.4.18 or newer
+AE2         15.4.10 through 15.x, including AE2-UELM 15.5.0-uelm
 Java        17
 ```
 
@@ -144,7 +144,7 @@ The build separates the slim development JAR from the reobfuscated Jar-in-Jar
 distribution. Publish only the unclassified distribution artifact:
 
 ```text
-build/libs/ae2lt-2.0.7-forge-1.20.1-r1.jar
+build/libs/ae2lt-2.0.7-forge-1.20.1-r3.jar
 ```
 
 Do not distribute the `-slim.jar` artifact.
