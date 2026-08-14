@@ -37,7 +37,7 @@ import com.moakiee.ae2lt.overload.pattern.OverloadedProviderOnlyPatternDetails;
 import com.moakiee.ae2lt.util.MixinReflectionSupport;
 
 /**
- * Ports AE2LT's overload-output claim tracking to Neo ECO AE 20.3.x.
+ * Ports AE2LT's overload-output claim tracking to Neo ECO AE 20.3.x and 20.4.x.
  * Neo ECO's 1.20.1 job and elapsed-time classes are private implementation
  * details, so the same state transitions are applied through guarded reflection.
  */
@@ -167,14 +167,34 @@ public abstract class ECOCraftingCpuLogicMixin {
     }
 
     @WrapOperation(
-            // Neo ECO AE 20.3.x performs the ordinary provider push in this slow-path method.
+            // Issue #43: NeoECO 20.3.x performs the ordinary provider push in this slow-path method.
             method = "tryPushSlowPattern",
             at = @At(
                     value = "INVOKE",
                     target = "Lappeng/api/networking/crafting/ICraftingProvider;pushPattern(Lappeng/api/crafting/IPatternDetails;[Lappeng/api/stacks/KeyCounter;)Z"),
-            remap = false)
-    private boolean ae2lt$registerExpectedOutputs(ICraftingProvider provider, IPatternDetails details,
+            remap = false,
+            require = 0)
+    private boolean ae2lt$registerExpectedOutputs20_3(ICraftingProvider provider, IPatternDetails details,
             KeyCounter[] inputHolder, Operation<Boolean> original) {
+        return ae2lt$pushProviderAndRegisterExpectedOutputs(provider, details, inputHolder, original);
+    }
+
+    @WrapOperation(
+            // Issue #43: NeoECO 20.4.x moved the ordinary provider push directly into executeCrafting.
+            method = "executeCrafting",
+            at = @At(
+                    value = "INVOKE",
+                    target = "Lappeng/api/networking/crafting/ICraftingProvider;pushPattern(Lappeng/api/crafting/IPatternDetails;[Lappeng/api/stacks/KeyCounter;)Z"),
+            remap = false,
+            require = 0)
+    private boolean ae2lt$registerExpectedOutputs20_4(ICraftingProvider provider, IPatternDetails details,
+            KeyCounter[] inputHolder, Operation<Boolean> original) {
+        return ae2lt$pushProviderAndRegisterExpectedOutputs(provider, details, inputHolder, original);
+    }
+
+    @Unique
+    private boolean ae2lt$pushProviderAndRegisterExpectedOutputs(ICraftingProvider provider,
+            IPatternDetails details, KeyCounter[] inputHolder, Operation<Boolean> original) {
         if (!AE2LT_ECO_AVAILABLE) {
             return original.call(provider, details, inputHolder);
         }
