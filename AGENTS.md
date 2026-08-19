@@ -33,7 +33,7 @@ Runtime / bytecode         Java 17
 Source license             LGPL-3.0-only
 Visual assets license      CC BY-NC-SA 3.0
 Stable addon API           com.moakiee.ae2lt.api.* only
-Current baseline           1.1.4-forge-1.20.1-r7
+Current baseline           2.0.7-forge-1.20.1-r5
 Exact major target         ae2lt-2.0.6.jar
 Target SHA-256             bea3e8196a3f126e2d8fcedc86bdb44b536efd3bedd28d3f89bdb0848e5a687b
 ```
