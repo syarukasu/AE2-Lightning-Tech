@@ -7,7 +7,9 @@ import com.google.gson.JsonParser;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Stream;
+import java.util.stream.StreamSupport;
 import org.junit.jupiter.api.Test;
 
 final class ForgePortResourceContractTest {
@@ -38,6 +40,33 @@ final class ForgePortResourceContractTest {
                         Files.readString(path).contains("neoforge:"),
                         path + " still contains a NeoForge-only identifier");
             }
+        }
+    }
+
+    @Test
+    void neoEcoOverloadRecipesUseTheDustTagsPublishedOnForge120() throws Exception {
+        Path recipes = RESOURCES.resolve("data/ae2lt/recipes/overload_processing");
+        Map<String, List<String>> expectedTags = Map.of(
+                "neoeco_crystal_ingot.json", List.of("forge:dusts/energized_crystal"),
+                "neoeco_energized_crystal.json", List.of("forge:dusts/energized_crystal"),
+                "neoeco_energized_fluix_crystal.json", List.of("forge:dusts/energized_crystal"),
+                "neoeco_energized_superconductive_ingot.json",
+                        List.of("forge:dusts/energized_fluix_crystal", "forge:dusts/aluminum"));
+
+        for (var entry : expectedTags.entrySet()) {
+            Path recipePath = recipes.resolve(entry.getKey());
+            var recipe = JsonParser.parseString(Files.readString(recipePath)).getAsJsonObject();
+            var tags = StreamSupport.stream(recipe.getAsJsonArray("inputs").spliterator(), false)
+                    .map(element -> element.getAsJsonObject().getAsJsonObject("ingredient"))
+                    .filter(ingredient -> ingredient.has("tag"))
+                    .map(ingredient -> ingredient.get("tag").getAsString())
+                    .toList();
+
+            assertTrue(tags.containsAll(entry.getValue()),
+                    recipePath + " does not use Neo ECO's Forge 1.20 dust tags");
+            assertFalse(tags.stream().anyMatch(tag ->
+                            tag.startsWith("c:dusts/energized_") || tag.equals("c:dusts/aluminum")),
+                    recipePath + " still uses the NeoForge common-tag namespace for a Neo ECO dust");
         }
     }
 

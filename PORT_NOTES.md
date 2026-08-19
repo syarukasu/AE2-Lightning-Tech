@@ -33,6 +33,12 @@ Inscriber recipe and the 36-output Overload Processing Factory recipe. Empty
 storage-cell disassembly is provided directly by AE2 15.4.10's
 `BasicStorageCell` behavior rather than duplicate data-component recipes.
 
+Neo ECO AE Extension 20.3.x and 20.4.x publish their energized crystal and
+aluminum dust tags under Forge's `forge:` namespace. The four affected Overload
+Processing Factory integration recipes use those Forge tags instead of the
+upstream 1.21 `c:` names; retaining the `c:` names produces empty ingredients
+that recipe viewers can list but the factory can never match.
+
 ## Attribution and licenses
 
 - Source code: GNU Lesser General Public License version 3 (`LICENSE`)
