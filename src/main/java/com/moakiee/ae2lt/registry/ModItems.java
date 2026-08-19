@@ -34,6 +34,7 @@ import com.moakiee.ae2lt.item.OverloadPatternEncoderItem;
 import com.moakiee.ae2lt.item.OverloadPatternItem;
 import com.moakiee.ae2lt.item.OverloadedFilterComponentItem;
 import com.moakiee.ae2lt.item.OverloadedWirelessConnectorItem;
+import com.moakiee.ae2lt.item.ClosedLoopPatternItem;
 import com.moakiee.ae2lt.item.PerfectElectroChimeCrystalItem;
 import com.moakiee.ae2lt.item.ResearchNoteItem;
 import com.moakiee.ae2lt.item.WeatherCondensateItem;
@@ -113,6 +114,17 @@ public final class ModItems {
 
     public static final RegistryObject<Item> ULTIMATE_OVERLOAD_CORE =
             registerSimpleItem("ultimate_overload_core", new Item.Properties());
+
+    // 2.0系の高位マルチブロック素材。各段階を個別のアイテムとして登録し、
+    // Overload ProcessingのレシピとLightning Assemblyの入力を同じIDで接続する。
+    public static final RegistryObject<Item> BASIC_TOPOLOGICAL_LATTICE =
+            registerSimpleItem("basic_topological_lattice", new Item.Properties());
+    public static final RegistryObject<Item> DENSE_TOPOLOGICAL_LATTICE =
+            registerSimpleItem("dense_topological_lattice", new Item.Properties());
+    public static final RegistryObject<Item> ENTANGLED_TOPOLOGICAL_LATTICE =
+            registerSimpleItem("entangled_topological_lattice", new Item.Properties());
+    public static final RegistryObject<Item> HYPERDIMENSIONAL_TOPOLOGICAL_LATTICE =
+            registerSimpleItem("hyperdimensional_topological_lattice", new Item.Properties());
 
     public static final RegistryObject<LightningCollapseMatrixItem> LIGHTNING_COLLAPSE_MATRIX =
             registerItem("lightning_collapse_matrix", LightningCollapseMatrixItem::new, new Item.Properties());
@@ -209,6 +221,12 @@ public final class ModItems {
     public static final RegistryObject<OverloadPatternItem> OVERLOAD_PATTERN = registerItem(
             "overload_pattern",
             OverloadPatternItem::new,
+            new Item.Properties());
+
+    /** Tianshuの端末で作成する、通常パターンの閉ループ束です。 */
+    public static final RegistryObject<ClosedLoopPatternItem> CLOSED_LOOP_PATTERN = registerItem(
+            "closed_loop_pattern",
+            ClosedLoopPatternItem::new,
             new Item.Properties());
 
     public static final RegistryObject<OverloadPatternEncoderItem> OVERLOAD_PATTERN_ENCODER = registerItem(

@@ -31,8 +31,8 @@ Minecraft             1.20.1
 Forge                 47.4.20
 AE2                   15.4.10 / 15.4.x
 Java                  17
-Current release       1.1.4-forge-1.20.1-r7
-Next target           upstream AE2LT 2.0.6
+Current release       2.0.6-forge-1.20.1-r1
+Feature target        upstream AE2LT 2.0.6, Forge 1.20.1 release r1
 Stable API            com.moakiee.ae2lt.api.*
 Source license        LGPL-3.0-only
 Assets license        CC BY-NC-SA 3.0
@@ -59,7 +59,7 @@ Assets license        CC BY-NC-SA 3.0
 |---|---:|---|---|---|
 | `P2` | #12 | NeoForge 1.21.1 / AE2 19 / Java 21からForge基盤変換 | `UPSTREAM_2_0_6_DIFF.md`, Issue #12 | build、metadata、registry/network/save adapter、Mixin configs |
 | `MX2` | #13 | Matter Warping Matrix | Issue #13 | Matrix Block/BE、cluster/scanner/repository、Menu/Screen、該当data |
-| `TS2` | #14 | Tianshu Supercomputer、Closed Loop、Terminal | Issue #14 | Tianshu multiblock、pattern/seed、maintenance/reserve、terminal UI/network |
+| `TS2` | #14 | Tianshu Supercomputer、Closed Loop、Terminal | Issue #14 | Tianshu multiblock、AE2 CPU/PatternContainer、pattern/seed、maintenance/reserve、terminal UI/network |
 | `PG2` | #15 | Pigmee Technology、Alien Starship | Issue #15 | Pigmee machine/cell/entity、conversion/ritual、worldgen/loot |
 | `ST2` | #16 | LightningKey、Bulk/Infinite/Fixed Cell | Issue #16 | key type、cell handler/inventory/item、NBT、tooltip/resources |
 | `WN2` | #17 | Interface/Provider/Wireless/Frequency parity | Issue #17 | existing provider/interface/wireless/frequency logicと2.0.6対応class |
@@ -77,6 +77,8 @@ Assets license        CC BY-NC-SA 3.0
 | Stable API | `api`, `api/client`, `api/event`, `api/frequency`, `api/ids`, `api/lightning` | third-party addon contract |
 | Lightning runtime | `grid`, `event`, lightning関連BlockEntity | energy storage/capture/tier/grid ownership |
 | Machines | machine関連Block/BE/Menu/Recipe | multiblock、processing、inventory/power |
+| Matter Warping Matrix | `block/Matrix*`, `blockentity/Matrix*`, `logic/craft/Matrix*` | 7x11x7 formation scanning、formed state、member binding |
+| Tianshu Supercomputing Array | `block/Tianshu*`, `blockentity/Tianshu*`, `logic/tianshu` | 7x7x7 formation scanning、formed state、AE2 CPU/PatternContainer、closed-loop runtime |
 | Overloaded AE network | `device`, `grid`, provider/interface/Menu/Network | high-throughput network components |
 | Wireless/Frequency | frequency/security/binding/wirelesslink/packet | membership、routing、recovery、permissions |
 | Equipment | `celestweave`, `item/railgun`, `device/module`, `device/network` | armor、railgun、module、binding |

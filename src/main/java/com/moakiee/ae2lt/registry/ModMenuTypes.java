@@ -8,6 +8,8 @@ import com.moakiee.ae2lt.menu.LightningCollectorMenu;
 import com.moakiee.ae2lt.menu.LightningSimulationChamberMenu;
 import com.moakiee.ae2lt.menu.OverloadPatternEncoderMenu;
 import com.moakiee.ae2lt.menu.OverloadDeviceWorkbenchMenu;
+import com.moakiee.ae2lt.menu.TianshuSupercomputerControllerMenu;
+import com.moakiee.ae2lt.menu.ClosedLoopPatternEncoderMenu;
 import com.moakiee.ae2lt.menu.OverloadProcessingFactoryMenu;
 import com.moakiee.ae2lt.menu.OverloadedInterfaceMenu;
 import com.moakiee.ae2lt.menu.OverloadedPatternProviderMenu;
@@ -95,6 +97,16 @@ public final class ModMenuTypes {
             OVERLOAD_DEVICE_WORKBENCH = MENU_TYPES.register(
                     "overload_device_workbench",
                     () -> OverloadDeviceWorkbenchMenu.TYPE);
+
+    public static final RegistryObject<MenuType<TianshuSupercomputerControllerMenu>>
+            TIANSHU_CONTROLLER = MENU_TYPES.register(
+                    "tianshu_supercomputer_controller",
+                    () -> TianshuSupercomputerControllerMenu.TYPE);
+
+    public static final RegistryObject<MenuType<ClosedLoopPatternEncoderMenu>>
+            CLOSED_LOOP_PATTERN_ENCODER = MENU_TYPES.register(
+                    "closed_loop_pattern_encoder",
+                    () -> ClosedLoopPatternEncoderMenu.TYPE);
 
     private ModMenuTypes() {
     }

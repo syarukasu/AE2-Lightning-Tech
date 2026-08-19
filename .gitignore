@@ -51,6 +51,7 @@ META-INF/
 # Local dev logs / scratch
 DevLog/
 .codex-tmp/
+target-decompiled/
 
 # Bundled source mirrors / references
 Source Code/

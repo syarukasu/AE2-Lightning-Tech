@@ -1,0 +1,1 @@
+{"type":"minecraft:block","pools":[{"rolls":1.0,"entries":[{"type":"minecraft:item","name":"ae2lt:matter_warping_matrix_thermal_control_unit_t2"}],"conditions":[{"condition":"minecraft:survives_explosion"}]}]}

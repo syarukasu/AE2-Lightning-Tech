@@ -10,6 +10,13 @@ import com.moakiee.ae2lt.blockentity.ExtendedOverloadedPatternProviderBlockEntit
 import com.moakiee.ae2lt.blockentity.LightningAssemblyChamberBlockEntity;
 import com.moakiee.ae2lt.blockentity.LightningCollectorBlockEntity;
 import com.moakiee.ae2lt.blockentity.LightningSimulationChamberBlockEntity;
+import com.moakiee.ae2lt.blockentity.MatrixControllerBlockEntity;
+import com.moakiee.ae2lt.blockentity.MatrixPatternStorageBlockEntity;
+import com.moakiee.ae2lt.blockentity.MatrixPortBlockEntity;
+import com.moakiee.ae2lt.blockentity.TianshuSupercomputerControllerBlockEntity;
+import com.moakiee.ae2lt.blockentity.TianshuSupercomputerPortBlockEntity;
+import com.moakiee.ae2lt.blockentity.TianshuPatternStorageBlockEntity;
+import com.moakiee.ae2lt.blockentity.TianshuSeedStorageBlockEntity;
 import com.moakiee.ae2lt.blockentity.OverloadProcessingFactoryBlockEntity;
 import com.moakiee.ae2lt.blockentity.OverloadDeviceWorkbenchBlockEntity;
 import com.moakiee.ae2lt.blockentity.OverloadedControllerBlockEntity;
@@ -194,6 +201,63 @@ public final class ModBlockEntities {
                     () -> BlockEntityType.Builder.of(
                             OverloadDeviceWorkbenchBlockEntity::new,
                             ModBlocks.OVERLOAD_DEVICE_WORKBENCH.get())
+                            .build(null));
+
+    public static final RegistryObject<BlockEntityType<MatrixControllerBlockEntity>>
+            MATRIX_CONTROLLER = BLOCK_ENTITY_TYPES.register(
+                    "matter_warping_matrix_controller",
+                    () -> BlockEntityType.Builder.of(
+                            MatrixControllerBlockEntity::new,
+                            ModBlocks.MATTER_WARPING_MATRIX_CONTROLLER.get())
+                            .build(null));
+
+    public static final RegistryObject<BlockEntityType<MatrixPortBlockEntity>>
+            MATRIX_PORT = BLOCK_ENTITY_TYPES.register(
+                    "matter_warping_matrix_port",
+                    () -> BlockEntityType.Builder.of(
+                            MatrixPortBlockEntity::new,
+                            ModBlocks.MATTER_WARPING_MATRIX_PORT.get())
+                            .build(null));
+
+    public static final RegistryObject<BlockEntityType<MatrixPatternStorageBlockEntity>>
+            MATRIX_PATTERN_STORAGE = BLOCK_ENTITY_TYPES.register(
+                    "matter_warping_matrix_pattern_storage",
+                    () -> BlockEntityType.Builder.of(
+                            MatrixPatternStorageBlockEntity::new,
+                            ModBlocks.MATTER_WARPING_MATRIX_PATTERN_STORAGE_T1.get(),
+                            ModBlocks.MATTER_WARPING_MATRIX_PATTERN_STORAGE_T2.get())
+                            .build(null));
+
+    public static final RegistryObject<BlockEntityType<TianshuSupercomputerControllerBlockEntity>>
+            TIANSHU_CONTROLLER = BLOCK_ENTITY_TYPES.register(
+                    "tianshu_supercomputer_controller",
+                    () -> BlockEntityType.Builder.of(
+                            TianshuSupercomputerControllerBlockEntity::new,
+                            ModBlocks.TIANSHU_CONTROLLER.get())
+                            .build(null));
+
+    public static final RegistryObject<BlockEntityType<TianshuSupercomputerPortBlockEntity>>
+            TIANSHU_PORT = BLOCK_ENTITY_TYPES.register(
+                    "tianshu_supercomputer_port",
+                    () -> BlockEntityType.Builder.of(
+                            TianshuSupercomputerPortBlockEntity::new,
+                            ModBlocks.TIANSHU_PORT.get())
+                            .build(null));
+
+    public static final RegistryObject<BlockEntityType<TianshuPatternStorageBlockEntity>>
+            TIANSHU_PATTERN_STORAGE = BLOCK_ENTITY_TYPES.register(
+                    "closed_loop_pattern_storage",
+                    () -> BlockEntityType.Builder.of(
+                            TianshuPatternStorageBlockEntity::new,
+                            ModBlocks.TIANSHU_PATTERN_STORAGE.get())
+                            .build(null));
+
+    public static final RegistryObject<BlockEntityType<TianshuSeedStorageBlockEntity>>
+            TIANSHU_SEED_STORAGE = BLOCK_ENTITY_TYPES.register(
+                    "closed_loop_seed_storage",
+                    () -> BlockEntityType.Builder.of(
+                            TianshuSeedStorageBlockEntity::new,
+                            ModBlocks.TIANSHU_SEED_STORAGE.get())
                             .build(null));
 
     private ModBlockEntities() {
